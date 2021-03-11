@@ -1,22 +1,35 @@
 jenkins:
+  systemMessage: "This Jenkins instance was configured using Jenkins Configuration as Code (JCasC)! See the git repo: https://github.com/reap2sow1/jenkins-docker"
+  # jenkins will complain if its not accessed through a reverse proxy for reference:
+  # https://www.jenkins.io/doc/book/system-administration/reverse-proxy-configuration-troubleshooting/
+  disabledAdministrativeMonitors:
+  - "hudson.diagnosis.ReverseProxySetupMonitor"
+  # setting this property now makes the Jenkins controller more strict about
+  # what commands its agents can send to it, the controller.
+  remotingSecurity:
+    enabled: true
   securityRealm:
     local:
       allowsSignup: false
       users:
-       - id: ${JENKINS_ADMIN_ID}
-         password: ${JENKINS_ADMIN_PASSWORD}
+      - id: "${JENKINS_ADMIN_ID}"
+        name: "${JENKINS_ADMIN_FULLNAME}"
+        password: "${JENKINS_ADMIN_PASSWORD}"
+        properties:
+        - mailer:
+            emailAddress: "${JENKINS_ADMIN_EMAIL}"
   authorizationStrategy:
     loggedInUsersCanDoAnything:
       allowAnonymousRead: false
 unclassified:
   location:
-    url: http://JENKINS_URL/
+    url: "http://${JENKINS_URL}/"
   mailer:
     authentication:
-      password: "bar" 
-      username: "foo@gmail.com"
+      password: "${JENKINS_ADMIN_EMAIL_SECRET}" 
+      username: "${JENKINS_ADMIN_EMAIL}"
     charset: "UTF-8"
-    smtpHost: "smtp.gmail.com"
+    smtpHost: "${SMTP_SERVER_ADDR}"
     smtpPort: "587"
     useSsl: false
     useTls: true
