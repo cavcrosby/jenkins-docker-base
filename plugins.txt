@@ -26,6 +26,7 @@ handlebars:latest
 jackson2-api:latest
 jaxb:latest
 jdk-tool:latest
+job-dsl:latest
 jobConfigHistory:latest
 jquery3-api:latest
 jsch:latest
