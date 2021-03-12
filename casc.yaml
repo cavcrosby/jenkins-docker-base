@@ -1,5 +1,5 @@
 jenkins:
-  systemMessage: "This Jenkins instance was configured using Jenkins Configuration as Code (JCasC)! See the git repo: https://github.com/reap2sow1/jenkins-docker"
+  systemMessage: "This Jenkins instance was configured using Jenkins Configuration as Code (JCasC)! Source git repo: https://github.com/reap2sow1/jenkins-docker-torkel"
   # jenkins will complain if its not accessed through a reverse proxy for reference:
   # https://www.jenkins.io/doc/book/system-administration/reverse-proxy-configuration-troubleshooting/
   disabledAdministrativeMonitors:
