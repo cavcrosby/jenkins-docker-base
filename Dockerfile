@@ -7,9 +7,13 @@ LABEL tech.conneracrosby.jenkins.base.commit=${COMMIT}
 LABEL tech.conneracrosby.jenkins.base.vcs-repo="https://github.com/reap2sow1/jenkins-docker-base"
 
 # parent jenkins image already has JENKINS_HOME defined
-ENV CASC_JENKINS_CONFIG ${JENKINS_HOME}/casc.yaml
+ENV CASC_JENKINS_CONFIG_FILENAME "casc.yaml"
+# this variable is picked up by the plugin, do not change to '..._PATH'
+ENV CASC_JENKINS_CONFIG "${JENKINS_HOME}/${CASC_JENKINS_CONFIG_FILENAME}"
 ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
+ENV JOB_YAML_GENERATOR_REPO_URL "https://github.com/reap2sow1/general-purpose-scripts"
+ENV JOB_YAML_GENERATOR_REPO_PATH "general-purpose-scripts/generate-jobs-yaml/generate-jobs-yaml.py"
 
-COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
-RUN /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
-COPY casc.yaml ${CASC_JENKINS_CONFIG}
+COPY plugins.txt "/usr/share/jenkins/ref/plugins.txt"
+RUN "/usr/local/bin/install-plugins.sh" < "/usr/share/jenkins/ref/plugins.txt"
+COPY "$CASC_JENKINS_CONFIG_FILENAME" "$CASC_JENKINS_CONFIG"
