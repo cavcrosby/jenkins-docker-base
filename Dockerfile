@@ -13,6 +13,7 @@ ENV CASC_JENKINS_CONFIG "${JENKINS_HOME}/${CASC_JENKINS_CONFIG_FILENAME}"
 ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
 ENV JOB_YAML_GENERATOR_REPO_URL "https://github.com/reap2sow1/general-purpose-scripts"
 ENV JOB_YAML_GENERATOR_REPO_PATH "general-purpose-scripts/generate-jobs-yaml/generate-jobs-yaml.py"
+ENV JOB_YAML_GENERATOR_REPO_NAME "general-purpose-scripts"
 
 COPY plugins.txt "/usr/share/jenkins/ref/plugins.txt"
 RUN "/usr/local/bin/install-plugins.sh" < "/usr/share/jenkins/ref/plugins.txt"
