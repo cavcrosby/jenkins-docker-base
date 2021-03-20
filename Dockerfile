@@ -15,8 +15,9 @@ ENV JOB_YAML_GENERATOR_REPO_URL "https://github.com/reap2sow1/general-purpose-sc
 ENV JOB_YAML_GENERATOR_REPOFILE_PATH "general-purpose-scripts/generate-jobs-yaml/generate-jobs-yaml.py"
 
 USER root
-RUN apt-get update && apt-get install python3 --assume-yes
+RUN apt-get update && apt-get install python3 python3-pip --assume-yes
 USER jenkins
 COPY plugins.txt "/usr/share/jenkins/ref/plugins.txt"
+# TODO(conner@conneracrosby.tech): install-plugins.sh is supposedly outdated/deprecated, look into jenkins-plugin-cli
 RUN "/usr/local/bin/install-plugins.sh" < "/usr/share/jenkins/ref/plugins.txt"
 COPY "$CASC_JENKINS_CONFIG_FILENAME" "$CASC_JENKINS_CONFIG"
