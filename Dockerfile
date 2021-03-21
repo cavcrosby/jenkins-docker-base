@@ -2,8 +2,8 @@ FROM jenkins/jenkins:lts
 
 ARG BRANCH
 ARG COMMIT
-LABEL tech.conneracrosby.jenkins.base.branch=${BRANCH}
-LABEL tech.conneracrosby.jenkins.base.commit=${COMMIT}
+LABEL tech.conneracrosby.jenkins.base.branch="${BRANCH}"
+LABEL tech.conneracrosby.jenkins.base.commit="${COMMIT}"
 LABEL tech.conneracrosby.jenkins.base.vcs-repo="https://github.com/reap2sow1/jenkins-docker-base"
 
 # parent jenkins image already has JENKINS_HOME defined
@@ -16,6 +16,8 @@ ENV JOB_YAML_GENERATOR_REPOFILE_PATH "general-purpose-scripts/generate-jobs-yaml
 
 USER root
 RUN apt-get update && apt-get install python3 python3-pip --assume-yes
+RUN python3 -m pip install ruamel.yaml toml
+
 USER jenkins
 COPY plugins.txt "/usr/share/jenkins/ref/plugins.txt"
 # TODO(conner@conneracrosby.tech): install-plugins.sh is supposedly outdated/deprecated, look into jenkins-plugin-cli
