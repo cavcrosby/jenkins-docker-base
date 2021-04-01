@@ -21,6 +21,14 @@ jenkins:
   authorizationStrategy:
     loggedInUsersCanDoAnything:
       allowAnonymousRead: false
+credentials:
+  system:
+    domainCredentials:
+    - credentials:
+      - usernamePassword:
+          username: "reap2sow1-github"
+          password: "{JENKINS_GITHUB_API_KEY}"
+          scope: GLOBAL
 unclassified:
   location:
     url: "http://${JENKINS_URL}/"
