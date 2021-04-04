@@ -27,7 +27,7 @@ credentials:
     - credentials:
       - usernamePassword:
           username: "reap2sow1-github"
-          password: "{JENKINS_GITHUB_API_KEY}"
+          password: "${JENKINS_GITHUB_API_KEY}"
           scope: GLOBAL
 unclassified:
   location:
