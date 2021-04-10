@@ -26,6 +26,7 @@ credentials:
     domainCredentials:
     - credentials:
       - usernamePassword:
+        # TODO(conner@conneracrosby.tech): Add this as a env var?
           username: "reap2sow1-github"
           password: "${JENKINS_GITHUB_API_KEY}"
           scope: GLOBAL
