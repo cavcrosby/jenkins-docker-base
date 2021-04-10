@@ -12,11 +12,6 @@ ENV CASC_JENKINS_CONFIG_FILENAME "casc.yaml"
 ENV CASC_JENKINS_CONFIG "${JENKINS_HOME}/${CASC_JENKINS_CONFIG_FILENAME}"
 ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
 
-USER root
-RUN apt-get update && apt-get install python3 python3-pip --assume-yes
-RUN python3 -m pip install ruamel.yaml toml
-
-USER jenkins
 COPY plugins.txt "/usr/share/jenkins/ref/plugins.txt"
 # TODO(conner@conneracrosby.tech): install-plugins.sh is supposedly outdated/deprecated, look into jenkins-plugin-cli
 RUN "/usr/local/bin/install-plugins.sh" < "/usr/share/jenkins/ref/plugins.txt"
