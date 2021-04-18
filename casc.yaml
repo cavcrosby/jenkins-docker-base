@@ -18,6 +18,8 @@ jenkins:
         properties:
         - mailer:
             emailAddress: "${JENKINS_ADMIN_EMAIL}"
+        - timezone:
+            timeZoneName: "America/New_York"
   authorizationStrategy:
     loggedInUsersCanDoAnything:
       allowAnonymousRead: false
