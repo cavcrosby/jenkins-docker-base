@@ -28,9 +28,9 @@ credentials:
     domainCredentials:
     - credentials:
       - usernamePassword:
-          id: "${JENKINS_GIT_CREDENTIAL_ID}"
-          username: "${JENKINS_GIT_CREDENTIAL_USERNAME}"
-          password: "${JENKINS_GITHUB_API_KEY}"
+          id: "${JENKINS_GITHUB_CREDENTIAL_ID}"
+          username: "${JENKINS_GITHUB_CREDENTIAL_USERNAME}"
+          password: "${JENKINS_GITHUB_CREDENTIAL_SECRET}"
           scope: GLOBAL
 unclassified:
   location:
