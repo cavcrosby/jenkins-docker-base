@@ -13,6 +13,6 @@ ENV CASC_JENKINS_CONFIG "${JENKINS_HOME}/${CASC_JENKINS_CONFIG_FILENAME}"
 ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
 
 COPY plugins.txt "/usr/share/jenkins/ref/plugins.txt"
-# TODO(conner@conneracrosby.tech): install-plugins.sh is supposedly outdated/deprecated, look into jenkins-plugin-cli
+# TODO(cavcrosby): install-plugins.sh is supposedly outdated/deprecated, look into jenkins-plugin-cli
 RUN "/usr/local/bin/install-plugins.sh" < "/usr/share/jenkins/ref/plugins.txt"
 COPY "$CASC_JENKINS_CONFIG_FILENAME" "$CASC_JENKINS_CONFIG"
