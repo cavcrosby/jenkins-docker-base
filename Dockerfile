@@ -2,9 +2,9 @@ FROM jenkins/jenkins:lts
 
 ARG BRANCH
 ARG COMMIT
-LABEL tech.conneracrosby.jenkins.base.branch="${BRANCH}"
-LABEL tech.conneracrosby.jenkins.base.commit="${COMMIT}"
-LABEL tech.conneracrosby.jenkins.base.vcs-repo="https://github.com/cavcrosby/jenkins-docker-base"
+LABEL tech.cavcrosby.jenkins.base.branch="${BRANCH}"
+LABEL tech.cavcrosby.jenkins.base.commit="${COMMIT}"
+LABEL tech.cavcrosby.jenkins.base.vcs-repo="https://github.com/cavcrosby/jenkins-docker-base"
 
 # parent jenkins image already has JENKINS_HOME defined
 ENV CASC_JENKINS_CONFIG_FILENAME "casc.yaml"
