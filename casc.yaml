@@ -4,7 +4,7 @@ jenkins:
   # https://www.jenkins.io/doc/book/system-administration/reverse-proxy-configuration-troubleshooting/
   disabledAdministrativeMonitors:
   - "hudson.diagnosis.ReverseProxySetupMonitor"
-  # setting this property now makes the Jenkins controller more strict about
+  # Setting this property now makes the Jenkins controller more strict about
   # what commands its agents can send to it, the controller.
   remotingSecurity:
     enabled: true
