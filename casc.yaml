@@ -33,6 +33,12 @@ credentials:
           password: "${JENKINS_GITHUB_CREDENTIAL_SECRET}"
           scope: GLOBAL
 unclassified:
+  email-ext:
+    mailAccount:
+      smtpHost: "${SMTP_SERVER_ADDR}"
+      smtpPassword: "${JENKINS_ADMIN_EMAIL_SECRET}" 
+      smtpPort: "587"
+      smtpUsername: "${JENKINS_ADMIN_EMAIL}"
   location:
     url: "http://${JENKINS_URL}/"
   mailer:
