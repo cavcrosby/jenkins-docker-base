@@ -1,0 +1,17 @@
+---
+- name: Deploy a jenkins-base container
+  hosts: localhost
+  connection: local
+  vars:
+    ansible_python_interpreter: "{{ lookup('env', 'PYENV_ROOT') }}/versions/{{ lookup('env', 'PYTHON_VIRTUALENV_NAME') }}/bin/python"
+
+  roles:
+    - role: cavcrosby.general.jenkins_base_containers
+      vars:
+        image_to_deploy: base
+        image_tag: "{{ lookup('env', 'DOCKER_CONTEXT_TAG') }}"
+        create_container_network: true
+        container_name: "{{ lookup('env', 'CONTAINER_NAME') }}"
+        container_network: "{{ lookup('env', 'CONTAINER_NETWORK') }}"
+        container_volume: "{{ lookup('env', 'CONTAINER_VOLUME') }}"
+        jenkins_admin_email_secret: "{{ email_secret }}"
