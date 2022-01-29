@@ -39,6 +39,7 @@ unclassified:
       smtpPassword: "${JENKINS_ADMIN_EMAIL_SECRET}" 
       smtpPort: "587"
       smtpUsername: "${JENKINS_ADMIN_EMAIL}"
+      useTls: true
   location:
     url: "http://${JENKINS_URL}/"
   mailer:
