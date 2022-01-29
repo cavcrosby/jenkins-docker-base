@@ -62,11 +62,12 @@ ANSISRC = $(shell find . \
 DOCKER = docker
 GAWK = gawk
 GIT = git
-executables = \
-	${DOCKER}\
-	${GIT}
 
 # simply expanded variables
+override executables := \
+	${DOCKER}\
+	${GIT}\
+	${python_executables}
 _check_executables := $(foreach exec,${executables},$(if $(shell command -v ${exec}),pass,$(error "No ${exec} in PATH")))
 
 .PHONY: ${HELP}
