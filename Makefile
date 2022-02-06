@@ -97,7 +97,7 @@ ${IMAGE}:
 
 .PHONY: ${DEPLOY}
 ${DEPLOY}:
->	 ${ANSIBLE_PLAYBOOK} --inventory ./localhost ./create-container.yml --ask-become-pass
+>	 ${ANSIBLE_PLAYBOOK} --inventory ./localhost ./create_container.yml --ask-become-pass
 
 .PHONY: ${DISMANTLE}
 ${DISMANTLE}:
