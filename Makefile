@@ -34,7 +34,7 @@ ANSISRC = $(shell find . \
 )
 
 # simply expanded variables
-override executables := \
+executables := \
 	${docker_executables}\
 	${python_executables}
 
