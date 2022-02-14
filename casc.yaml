@@ -32,6 +32,10 @@ credentials:
           username: "${JENKINS_GITHUB_CREDENTIAL_USERNAME}"
           password: "${JENKINS_GITHUB_CREDENTIAL_SECRET}"
           scope: GLOBAL
+security:
+  scriptApproval:
+    approvedSignatures:
+      - "staticMethod java.lang.System getenv java.lang.String"
 unclassified:
   email-ext:
     mailAccount:
