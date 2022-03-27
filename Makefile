@@ -52,8 +52,8 @@ ${HELP}:
 >	@echo '                 environment setup'
 >	@echo '  ${CLEAN}        - removes files generated from all targets'
 >	@echo 'Common make configurations (e.g. make [config]=1 [targets]):'
->	@echo '  ANSIBLE_JBC_NO_LOG      - toggle logging from Ansible when deploying a project'
->	@echo '                            image (e.g. false/true, not 0/1)'
+>	@echo '  ANSIBLE_JBC_LOG_SECRETS      - toggle logging secrets from Ansible when deploying a'
+>	@echo '                                 project image (e.g. false/true, or 0/1)'
 
 .PHONY: ${SETUP}
 ${SETUP}: ${DOCKER_ANSIBLE_INVENTORY} ${PYENV_POETRY_SETUP}
