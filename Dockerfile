@@ -1,4 +1,4 @@
-FROM jenkins/jenkins:lts
+FROM jenkins/jenkins:lts@sha256:65cd83179ec68b047ac83875024d1515263ee36362161fe5962f7944071a0f5d
 
 ARG BRANCH
 ARG COMMIT
