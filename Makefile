@@ -16,7 +16,7 @@ include docker.mk
 export CONTAINER_NAME = jenkins-base
 export CONTAINER_NETWORK = jbc1
 export CONTAINER_VOLUME = jenkins_home:/var/jenkins_home
-DOCKER_REPO = cavcrosby/jenkins-base
+export DOCKER_REPO = cavcrosby/jenkins-base
 DOCKER_VCS_LABEL = tech.cavcrosby.jenkins.base.vcs-repo=https://github.com/cavcrosby/jenkins-docker-base
 
 include python.mk
@@ -50,10 +50,13 @@ ${HELP}:
 >	@echo '  ${DEPLOY}       - creates a container from the project image'
 >	@echo '  ${DISMANTLE}    - removes a deployed container and the supporting'
 >	@echo '                 environment setup'
+>	@echo '  ${TEST}         - runs test suite for the project'
 >	@echo '  ${CLEAN}        - removes files generated from all targets'
 >	@echo 'Common make configurations (e.g. make [config]=1 [targets]):'
 >	@echo '  ANSIBLE_JBC_LOG_SECRETS      - toggle logging secrets from Ansible when deploying a'
 >	@echo '                                 project image (e.g. false/true, or 0/1)'
+>	@echo '  CONTINUOUS_INTEGRATION       - toggle to possibly differentiate target behavior'
+>	@echo '                                 during ci (e.g. false/true, or 0/1)'
 
 .PHONY: ${SETUP}
 ${SETUP}: ${DOCKER_ANSIBLE_INVENTORY} ${PYENV_POETRY_SETUP}
@@ -66,6 +69,10 @@ ${DEPLOY}: ${DOCKER_TEST_DEPLOY}
 
 .PHONY: ${DISMANTLE}
 ${DISMANTLE}: ${DOCKER_TEST_DEPLOY_DISMANTLE}
+
+.PHONY: ${TEST}
+${TEST}:
+>	${PYTHON} -m unittest --verbose
 
 .PHONY: ${CLEAN}
 ${CLEAN}: ${DOCKER_IMAGE_CLEAN}
