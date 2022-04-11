@@ -60,6 +60,7 @@ ${HELP}:
 
 .PHONY: ${SETUP}
 ${SETUP}: ${DOCKER_ANSIBLE_INVENTORY} ${PYENV_POETRY_SETUP}
+>	${ANSIBLE_GALAXY} collection install --requirements-file ./requirements.yml
 
 .PHONY: ${IMAGE}
 ${IMAGE}: ${DOCKER_IMAGE}
