@@ -1,0 +1,53 @@
+name: Test
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python:
+          - 3.9.5
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install pyenv and managed Python version
+      id: pyenv_installation
+      uses: gabrielfalcao/pyenv-action@v9
+      with:
+        default: ${{ matrix.python }}
+
+    - name: Install virtualenv plugin for pyenv
+      run: |
+        git clone \
+          --depth 1 \
+          "https://github.com/pyenv/pyenv-virtualenv" \
+          "${{ steps.pyenv_installation.outputs.pyenv_root }}/plugins/pyenv-virtualenv"
+
+    - name: Grab cavcrosby-makefiles's official GPG key
+      run: |
+        curl --fail --show-error --location "https://packagecloud.io/cavcrosby/makefiles/gpgkey" \
+          | sudo gpg --dearmor --output "/usr/share/keyrings/cavcrosby-makefiles-keyring.gpg"
+
+    - name: Add cavcrosby-makefiles's main apt repository
+      run: |
+        apt_sourceline="deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/cavcrosby-makefiles-keyring.gpg]
+          https://packagecloud.io/cavcrosby/makefiles/$(lsb_release --id --short | tr '[:upper:]' '[:lower:]')
+          $(lsb_release --codename --short) main"
+
+        # leave var unquoted as I want the shell to trim excess whitespace
+        echo ${apt_sourceline} | sudo tee "/etc/apt/sources.list.d/docker.list"
+
+    - name: Install cavcrosby-makefiles
+      run: |
+        sudo apt-get update
+        sudo apt-get install --assume-yes \
+          cavcrosby-makefiles
+
+    - name: Run tests
+      run: |
+        . "/etc/profile.d/cavcrosby-makefiles"
+        make --include-dir "${CAVCROSBY_MAKEFILES_PATH}" setup
+        make --include-dir "${CAVCROSBY_MAKEFILES_PATH}" CONTINUOUS_INTEGRATION=1 test
