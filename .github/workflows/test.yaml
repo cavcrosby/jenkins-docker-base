@@ -60,21 +60,14 @@ jobs:
     - name: Install pyenv
       run: |
         curl https://pyenv.run | bash
+        echo "PATH=${PYENV_ROOT}/shims:${PYENV_ROOT}/bin:${PATH}" >> "${GITHUB_ENV}"
     
     - name: Install the managed Python version
       run: |
-        export PATH="${PYENV_ROOT}/bin:${PATH}"
-        eval "$(pyenv init --path)"
-        eval "$(pyenv init -)"
-
         pyenv install "$(make --include-dir "${CAVCROSBY_MAKEFILES_PATH}" get-virtualenv-python-version)"
 
     - name: Run tests
       run: |
-        export PATH="${PYENV_ROOT}/bin:${PATH}"
-        eval "$(pyenv init --path)"
-        eval "$(pyenv init -)"
-
         make --include-dir "${CAVCROSBY_MAKEFILES_PATH}" setup
 
         # MONITOR(cavcrosby): toggle SKIP_DOCKER_NETWORK as a temporary work around for
