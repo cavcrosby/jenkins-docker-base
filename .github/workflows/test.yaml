@@ -69,7 +69,7 @@ jobs:
 
         pyenv install "$(make --include-dir "${CAVCROSBY_MAKEFILES_PATH}" get-virtualenv-python-version)"
 
-    - name: Install the managed Python version && run tests
+    - name: Run tests
       run: |
         export PATH="${PYENV_ROOT}/bin:${PATH}"
         eval "$(pyenv init --path)"
@@ -78,9 +78,10 @@ jobs:
         make --include-dir "${CAVCROSBY_MAKEFILES_PATH}" setup
 
         # MONITOR(cavcrosby): toggle SKIP_DOCKER_NETWORK as a temporary work around for
-        # the 'make dismantle' target as this target uses a custom Docker client on my
-        # dev machine. That said, the changes made to this Docker client have been pushed
-        # upstream. Depending on how that goes, will affect what happens next.
+        # the 'make dismantle' target as this target assumes the Docker client is the
+        # customized version I have on my dev machine. That said, the changes made to
+        # this Docker client have been pushed upstream. Depending on how that goes, will
+        # affect what happens next.
         #
         # https://github.com/docker/cli/pull/3547
         make --include-dir "${CAVCROSBY_MAKEFILES_PATH}" SKIP_DOCKER_NETWORK=1 CONTINUOUS_INTEGRATION=1 test
