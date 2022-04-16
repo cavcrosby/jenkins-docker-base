@@ -19,7 +19,8 @@ jobs:
           https://packagecloud.io/cavcrosby/makefiles/$(lsb_release --id --short | tr '[:upper:]' '[:lower:]')
           $(lsb_release --codename --short) main"
 
-        # leave var unquoted as I want the shell to trim excess whitespace
+        # leave var unquoted as I want typical word splitting to occur, for reference:
+        # https://www.gnu.org/software/bash/manual/html_node/Word-Splitting.html
         echo ${apt_sourceline} | sudo tee "/etc/apt/sources.list.d/cavcrosby-makefiles.list"
 
     - name: Install cavcrosby-makefiles
