@@ -5,17 +5,19 @@ on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      CAVCROSBY_MAKEFILES_GPG_KEY_PATH: /usr/share/keyrings/cavcrosby-makefiles-keyring.gpg
     steps:
     - uses: actions/checkout@v3
 
     - name: Grab cavcrosby-makefiles's official GPG key
       run: |
         curl --fail --show-error --location "https://packagecloud.io/cavcrosby/makefiles/gpgkey" \
-          | sudo gpg --dearmor --output "/usr/share/keyrings/cavcrosby-makefiles-keyring.gpg"
+          | sudo gpg --dearmor --output "${CAVCROSBY_MAKEFILES_GPG_KEY_PATH}"
 
     - name: Add cavcrosby-makefiles's main apt repository
       run: |
-        apt_sourceline="deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/cavcrosby-makefiles-keyring.gpg]
+        apt_sourceline="deb [arch=$(dpkg --print-architecture) signed-by=${CAVCROSBY_MAKEFILES_GPG_KEY_PATH}]
           https://packagecloud.io/cavcrosby/makefiles/$(lsb_release --id --short | tr '[:upper:]' '[:lower:]')
           $(lsb_release --codename --short) main"
 
