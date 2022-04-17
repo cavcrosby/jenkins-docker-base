@@ -5,73 +5,20 @@ on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      CAVCROSBY_MAKEFILES_GPG_KEY_PATH: /usr/share/keyrings/cavcrosby-makefiles-keyring.gpg
     steps:
     - uses: actions/checkout@v3
+    - uses: cavcrosby/pyenv-setup@v1.0.0
 
-    - name: Grab cavcrosby-makefiles's official GPG key
-      run: |
-        curl --fail --show-error --location "https://packagecloud.io/cavcrosby/makefiles/gpgkey" \
-          | sudo gpg --dearmor --output "${CAVCROSBY_MAKEFILES_GPG_KEY_PATH}"
+    - id: common-mk-setup
+      uses: cavcrosby/common-mk-setup@v1.0.0
 
-    - name: Add cavcrosby-makefiles's main apt repository
-      run: |
-        apt_sourceline="deb [arch=$(dpkg --print-architecture) signed-by=${CAVCROSBY_MAKEFILES_GPG_KEY_PATH}]
-          https://packagecloud.io/cavcrosby/makefiles/$(lsb_release --id --short | tr '[:upper:]' '[:lower:]')
-          $(lsb_release --codename --short) main"
-
-        # leave var unquoted as I want typical word splitting to occur, for reference:
-        # https://www.gnu.org/software/bash/manual/html_node/Word-Splitting.html
-        echo ${apt_sourceline} | sudo tee "/etc/apt/sources.list.d/cavcrosby-makefiles.list"
-
-    - name: Install cavcrosby-makefiles
-      run: |
-        sudo apt-get update
-        sudo apt-get install --assume-yes \
-          cavcrosby-makefiles
-
-        . "/etc/profile.d/cavcrosby-makefiles"
-        echo "CAVCROSBY_MAKEFILES_PATH=${CAVCROSBY_MAKEFILES_PATH}" >> "${GITHUB_ENV}"
-
-    - name: Install pyenv dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install --assume-yes \
-          build-essential \
-          curl \
-          libbz2-dev \
-          libffi-dev \
-          liblzma-dev \
-          libncursesw5-dev \
-          libreadline-dev \
-          libsqlite3-dev \
-          libssl-dev \
-          libxml2-dev \
-          libxmlsec1-dev \
-          llvm \
-          make \
-          tk-dev \
-          wget \
-          xz-utils \
-          zlib1g-dev
-
-    - name: Set the PYENV_ROOT env var
-      run: |
-        echo "PYENV_ROOT=${RUNNER_TOOL_CACHE}/pyenv" >> "${GITHUB_ENV}"
-
-    - name: Install pyenv
-      run: |
-        curl https://pyenv.run | bash
-        echo "PATH=${PYENV_ROOT}/shims:${PYENV_ROOT}/bin:${PATH}" >> "${GITHUB_ENV}"
-    
     - name: Install the managed Python version
       run: |
-        pyenv install "$(make --include-dir "${CAVCROSBY_MAKEFILES_PATH}" get-virtualenv-python-version)"
+        pyenv install "$(make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" get-virtualenv-python-version)"
 
     - name: Run tests
       run: |
-        make --include-dir "${CAVCROSBY_MAKEFILES_PATH}" setup
+        make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" setup
 
         # MONITOR(cavcrosby): toggle SKIP_DOCKER_NETWORK as a temporary work around for
         # the 'make dismantle' target as this target assumes the Docker client is the
@@ -80,4 +27,4 @@ jobs:
         # affect what happens next.
         #
         # https://github.com/docker/cli/pull/3547
-        make --include-dir "${CAVCROSBY_MAKEFILES_PATH}" SKIP_DOCKER_NETWORK=1 CONTINUOUS_INTEGRATION=1 test
+        make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" SKIP_DOCKER_NETWORK=1 CONTINUOUS_INTEGRATION=1 test
