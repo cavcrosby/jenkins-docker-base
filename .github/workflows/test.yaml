@@ -28,3 +28,28 @@ jobs:
         #
         # https://github.com/docker/cli/pull/3547
         make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" SKIP_DOCKER_NETWORK=1 CONTINUOUS_INTEGRATION=1 test
+  tag:
+    if: github.event_name != 'pull_request'
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - uses: cavcrosby/pyenv-setup@v1.0.0
+
+    - id: common-mk-setup
+      uses: cavcrosby/common-mk-setup@v1.0.0
+
+    - name: Install the managed Python version
+      run: |
+        pyenv install "$(make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" get-virtualenv-python-version)"
+
+    - name: Run project setup
+      run: |
+        make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" setup
+
+    - name: Run autotag.py
+      run: |
+        python ${GITHUB_WORKSPACE}/.github/autotag.py --push
