@@ -26,14 +26,14 @@ _arg_parser = argparse.ArgumentParser(
     allow_abbrev=False,
 )
 
-# TODO(cavcrosby): _ENV_VAR_REGEX was copied over from another project. See
+# TODO(cavcrosby): ENV_VAR_REGEX was copied over from another project. See
 # about integrating this into pylib?
-_ENV_VAR_REGEX = r"^[a-zA-Z_]\w*=.+"
+ENV_VAR_REGEX = r"^[a-zA-Z_]\w*=.+"
 _DOCKERFILE = "Dockerfile"
 _JENKINS_DOCKER_IMAGE = "jenkins/jenkins:lts"
 _JENKINS_VERSION_ENV_VAR_NAME = "JENKINS_VERSION"
-_PRIOR_JENKINS_DOCKER_IMAGE = rf"(?<=-FROM ){_JENKINS_DOCKER_IMAGE}@sha256:\w+"
-_CURRENT_JENKINS_DOCKER_IMAGE = (
+PRIOR_JENKINS_DOCKER_IMAGE = rf"(?<=-FROM ){_JENKINS_DOCKER_IMAGE}@sha256:\w+"
+CURRENT_JENKINS_DOCKER_IMAGE = (
     rf"(?<=\+FROM ){_JENKINS_DOCKER_IMAGE}@sha256:\w+"
 )
 
@@ -214,7 +214,7 @@ def get_jenkins_version(docker_client, docker_image):
     docker_client.images.remove(docker_image)
 
     for env_var in jenkins_env_vars:
-        regex = re.compile(_ENV_VAR_REGEX)
+        regex = re.compile(ENV_VAR_REGEX)
         if regex.search(env_var) and (
             _JENKINS_VERSION_ENV_VAR_NAME  # noqa: W503
             == env_var.split("=")[0]  # noqa: W503
@@ -247,13 +247,13 @@ def main(args):
 
         if chd_file_path == pathlib.PurePath(repo_working_dir).joinpath(
             _DOCKERFILE
-        ) and re.findall(_PRIOR_JENKINS_DOCKER_IMAGE, patch_text):
+        ) and re.findall(PRIOR_JENKINS_DOCKER_IMAGE, patch_text):
             _logger.info(f"detected base image digest change in {_DOCKERFILE}")
             prior_jenkins_img = re.findall(
-                _PRIOR_JENKINS_DOCKER_IMAGE, patch_text
+                PRIOR_JENKINS_DOCKER_IMAGE, patch_text
             )[0]
             current_jenkins_img = re.findall(
-                _CURRENT_JENKINS_DOCKER_IMAGE, patch_text
+                CURRENT_JENKINS_DOCKER_IMAGE, patch_text
             )[0]
             _logger.info(f"prior Jenkins Docker image: {prior_jenkins_img}")
             _logger.info(
