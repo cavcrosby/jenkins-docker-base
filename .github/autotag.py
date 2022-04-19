@@ -3,6 +3,7 @@
 # Standard Library Imports
 import argparse
 import enum
+import logging
 import os
 import pathlib
 import re
@@ -16,6 +17,7 @@ import git
 import pylib
 
 # constants and other program configurations
+_PROGNAME = os.path.basename(os.path.abspath(__file__))
 _arg_parser = argparse.ArgumentParser(
     description=__doc__,
     formatter_class=lambda prog: pylib.argparse.CustomHelpFormatter(
@@ -27,6 +29,7 @@ _arg_parser = argparse.ArgumentParser(
 # TODO(cavcrosby): _ENV_VAR_REGEX was copied over from another project. See
 # about integrating this into pylib?
 _ENV_VAR_REGEX = r"^[a-zA-Z_]\w*=.+"
+_DOCKERFILE = "Dockerfile"
 _JENKINS_DOCKER_IMAGE = "jenkins/jenkins:lts"
 _JENKINS_VERSION_ENV_VAR_NAME = "JENKINS_VERSION"
 _PRIOR_JENKINS_DOCKER_IMAGE = rf"(?<=-FROM ){_JENKINS_DOCKER_IMAGE}@sha256:\w+"
@@ -39,6 +42,15 @@ _CURRENT_JENKINS_DOCKER_IMAGE = (
 
 PUSH_SHORT_OPTION = "p"
 PUSH_LONG_OPTION = "push"
+
+_logger = logging.getLogger(__name__)
+_logger.setLevel(logging.INFO)
+_console_handler = logging.StreamHandler()
+_console_handler.setLevel(logging.INFO)
+_formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+
+_console_handler.setFormatter(_formatter)
+_logger.addHandler(_console_handler)
 
 
 class SemanticVersion:
@@ -135,7 +147,10 @@ class SemanticVersion:
 
     def __eq__(self, v):
         """Determine if the semantic version is equal to this instance."""
-        return f"{self.major}.{self.minor}.{self.patch}" == f"{v.major}.{v.minor}.{v.patch}"
+        return (
+            f"{self.major}.{self.minor}.{self.patch}"
+            == f"{v.major}.{v.minor}.{v.patch}"  # noqa: W503
+        )
 
     def __str__(self):
         """Return the string representation of an instance."""
@@ -211,6 +226,7 @@ def get_jenkins_version(docker_client, docker_image):
 
 def main(args):
     """Start the main program execution."""
+    _logger.info(f"started {_PROGNAME}")
     this_repo = git.Repo(os.getcwd(), search_parent_directories=True)
     repo_working_dir = this_repo.working_tree_dir
     latest_version = SemanticVersion(
@@ -230,14 +246,19 @@ def main(args):
         patch_text = chd_object.diff.decode("utf-8")
 
         if chd_file_path == pathlib.PurePath(repo_working_dir).joinpath(
-            "Dockerfile"
+            _DOCKERFILE
         ) and re.findall(_PRIOR_JENKINS_DOCKER_IMAGE, patch_text):
+            _logger.info(f"detected base image digest change in {_DOCKERFILE}")
             prior_jenkins_img = re.findall(
                 _PRIOR_JENKINS_DOCKER_IMAGE, patch_text
             )[0]
             current_jenkins_img = re.findall(
                 _CURRENT_JENKINS_DOCKER_IMAGE, patch_text
             )[0]
+            _logger.info(f"prior Jenkins Docker image: {prior_jenkins_img}")
+            _logger.info(
+                f"current Jenkins Docker image: {current_jenkins_img}"
+            )
 
             docker_client = docker.from_env()
             prior_jenkins_version = SemanticVersion(
@@ -246,12 +267,18 @@ def main(args):
             current_jenkins_version = SemanticVersion(
                 get_jenkins_version(docker_client, current_jenkins_img)
             )
+            _logger.info(f"prior Jenkins version: {prior_jenkins_version}")
+            _logger.info(f"current Jenkins version: {current_jenkins_version}")
 
             types_of_jenkins_update = SemanticVersion.determine_update_types(
                 prior_jenkins_version, current_jenkins_version
             )
-            greatest_update_type = None
+            _logger.info(
+                "detected semantic version updates between "
+                f"Jenkins versions: {types_of_jenkins_update}"
+            )
 
+            greatest_update_type = None
             # In the event that the Jenkins maintainers decided to increment
             # multiple parts of the semantic versioning. I only want to denote
             # the greatest part that has changed.
@@ -293,14 +320,18 @@ def main(args):
                     + "Manual tagging will need to occur for this kind of update.\n"  # noqa: E501,W503
                 )
         elif chd_file_path == pathlib.PurePath(repo_working_dir).joinpath(
-            "Dockerfile"
+            _DOCKERFILE
         ):
+            _logger.info(f"detected general {_DOCKERFILE} changes")
             new_latest_version.increment_minor(1)
         elif chd_file_path == pathlib.PurePath(repo_working_dir).joinpath(
             "casc.yaml"
         ):
+            _logger.info("detected casc file changes")
             new_latest_version.increment_minor(1)
-    
+
+    _logger.info(f"the prior latest repo version: {latest_version}")
+    _logger.info(f"the final new latest repo version: {new_latest_version}")
     if new_latest_version != latest_version:
         new_latest_tag_name = f"v{new_latest_version}"
         this_repo.create_tag(new_latest_tag_name)
