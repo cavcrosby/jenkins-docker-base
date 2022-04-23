@@ -53,18 +53,18 @@ _console_handler.setFormatter(_formatter)
 _logger.addHandler(_console_handler)
 
 
-class SemanticVersion:
-    """Represent a semantic version.
+class JenkinsVersion:
+    """Represent a jenkins version.
 
     Parameters
     ----------
     version : str
-        A semantic version string (e.g. 1.2.3, 3.2.2).
+        A jenkins version string (e.g. 1.2.3, 3.2.2).
 
     Attributes
     ----------
-    SEMANTIC_VERSION_REGEX : str
-        The regex used to extract the different parts of the semantic
+    JENKINS_VERSION_REGEX : str
+        The regex used to extract the different parts of the jenkins
         versioning.
 
     """
@@ -72,81 +72,90 @@ class SemanticVersion:
     _MAJOR_CAPTURE_GROUP = 1
     _MINOR_CAPTURE_GROUP = 2
     _PATCH_CAPTURE_GROUP = 3
+    _IMPLICIT_PATCH_CHANGE_VERSION = -1
 
-    # for reference on where I got this regex from:
+    # for reference on what inspired this regex:
     # https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
-    SEMANTIC_VERSION_REGEX = r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"  # noqa: E501
+    JENKINS_VERSION_REGEX = r"^(0|[1-9]\d*)\.(0|[1-9]\d*)(?:\.(0|[1-9]\d*))?(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"  # noqa: E501
 
     def __init__(self, version):
-        """Construct the semantic version object."""
-        semantic_groups = re.match(self.SEMANTIC_VERSION_REGEX, version)
-        self.major = int(semantic_groups[self._MAJOR_CAPTURE_GROUP])
-        self.minor = int(semantic_groups[self._MINOR_CAPTURE_GROUP])
-        self.patch = int(semantic_groups[self._PATCH_CAPTURE_GROUP])
+        """Construct the jenkins version object."""
+        version_groups = re.match(self.JENKINS_VERSION_REGEX, version)
+        self.major = int(version_groups[self._MAJOR_CAPTURE_GROUP])
+        self.minor = int(version_groups[self._MINOR_CAPTURE_GROUP])
+        self.patch = version_groups[self._PATCH_CAPTURE_GROUP]
+
+        if not self.patch:
+            # I still want to always detect a patch version update regardless
+            # of what this version ever gets compared to. This is unless only
+            # a minor to minor version update occurs (e.g. 2.333 -> 2.334).
+            self.patch = self._IMPLICIT_PATCH_CHANGE_VERSION
+        else:
+            self.patch = int(self.patch)
 
     @classmethod
     def determine_update_types(cls, v1, v2):
-        """Determine the update types between two semantic versions.
+        """Determine the update types between two jenkins versions.
 
         Parameters
         ----------
-        v1 : autotag.SemanticVersion
-            A semantic version object.
-        v2 : autotag.SemanticVersion
-            A semantic version object.
+        v1 : autotag.JenkinsVersion
+            A jenkins version object.
+        v2 : autotag.JenkinsVersion
+            A jenkins version object.
 
         Notes
         -----
-        When going from one semantic version to another. It's normal to
+        When going from one jenkins version to another. It's normal to
         consider whether the new version is considered a patch, minor, or major
         update to the previous version.
 
         """
         update_types = list()
         if abs(v1.major - v2.major) > 0:
-            update_types.append(SemanticVersionUpdateTypes.MAJOR)
+            update_types.append(JenkinsVersionUpdateTypes.MAJOR)
         if abs(v1.minor - v2.minor) > 0:
-            update_types.append(SemanticVersionUpdateTypes.MINOR)
+            update_types.append(JenkinsVersionUpdateTypes.MINOR)
         if abs(v1.patch - v2.patch) > 0:
-            update_types.append(SemanticVersionUpdateTypes.PATCH)
+            update_types.append(JenkinsVersionUpdateTypes.PATCH)
 
         return update_types
 
     def increment_major(self, by):
-        """Increment the semantic versioning major by a given amount.
+        """Increment the jenkins versioning major by a given amount.
 
         Parameters
         ----------
         by : int
-            The amount to increment the semantic versioning major by.
+            The amount to increment the jenkins versioning major by.
 
         """
         self.major += by
 
     def increment_minor(self, by):
-        """Increment the semantic versioning minor by a given amount.
+        """Increment the jenkins versioning minor by a given amount.
 
         Parameters
         ----------
         by : int
-            The amount to increment the semantic versioning minor by.
+            The amount to increment the jenkins versioning minor by.
 
         """
         self.minor += by
 
     def increment_patch(self, by):
-        """Increment the semantic versioning patch by a given amount.
+        """Increment the jenkins versioning patch by a given amount.
 
         Parameters
         ----------
         by : int
-            The amount to increment the semantic versioning patch by.
+            The amount to increment the jenkins versioning patch by.
 
         """
         self.patch += by
 
     def __eq__(self, v):
-        """Determine if the semantic version is equal to this instance."""
+        """Determine if the jenkins version is equal to this instance."""
         return (
             f"{self.major}.{self.minor}.{self.patch}"
             == f"{v.major}.{v.minor}.{v.patch}"  # noqa: W503
@@ -154,11 +163,15 @@ class SemanticVersion:
 
     def __str__(self):
         """Return the string representation of an instance."""
-        return f"{self.major}.{self.minor}.{self.patch}"
+        return (
+            f"{self.major}.{self.minor}"
+            if self.patch == self._IMPLICIT_PATCH_CHANGE_VERSION
+            else f"{self.major}.{self.minor}.{self.patch}"
+        )
 
 
-class SemanticVersionUpdateTypes(enum.Enum):
-    """Represent values that designate type of semantic versioning update."""
+class JenkinsVersionUpdateTypes(enum.Enum):
+    """Represent values that designate type of jenkins versioning update."""
 
     MAJOR = enum.auto()
     MINOR = enum.auto()
@@ -229,12 +242,12 @@ def main(args):
     _logger.info(f"started {_PROGNAME}")
     this_repo = git.Repo(os.getcwd(), search_parent_directories=True)
     repo_working_dir = this_repo.working_tree_dir
-    latest_version = SemanticVersion(
+    latest_version = JenkinsVersion(
         str(
             sorted(this_repo.tags, key=lambda tagref: str(tagref))[-1]
         ).replace("v", "")
     )
-    new_latest_version = SemanticVersion(str(latest_version))
+    new_latest_version = JenkinsVersion(str(latest_version))
 
     # the 'R' kwargs parameter swaps both sides of a diff
     patch = this_repo.head.commit.diff("HEAD~1", create_patch=True, R=True)
@@ -261,61 +274,59 @@ def main(args):
             )
 
             docker_client = docker.from_env()
-            prior_jenkins_version = SemanticVersion(
+            prior_jenkins_version = JenkinsVersion(
                 get_jenkins_version(docker_client, prior_jenkins_img)
             )
-            current_jenkins_version = SemanticVersion(
+            current_jenkins_version = JenkinsVersion(
                 get_jenkins_version(docker_client, current_jenkins_img)
             )
             _logger.info(f"prior Jenkins version: {prior_jenkins_version}")
             _logger.info(f"current Jenkins version: {current_jenkins_version}")
 
-            types_of_jenkins_update = SemanticVersion.determine_update_types(
+            types_of_jenkins_update = JenkinsVersion.determine_update_types(
                 prior_jenkins_version, current_jenkins_version
             )
             _logger.info(
-                "detected semantic version updates between "
+                "detected jenkins version updates between "
                 f"Jenkins versions: {types_of_jenkins_update}"
             )
 
             greatest_update_type = None
             # In the event that the Jenkins maintainers decided to increment
-            # multiple parts of the semantic versioning. I only want to denote
+            # multiple parts of the jenkins versioning. I only want to denote
             # the greatest part that has changed.
             #
             # major > minor > patch
             for type_of_jenkins_update in types_of_jenkins_update:
                 if (
-                    type_of_jenkins_update == SemanticVersionUpdateTypes.PATCH
+                    type_of_jenkins_update == JenkinsVersionUpdateTypes.PATCH
                     and (  # noqa: W503
                         greatest_update_type
-                        != SemanticVersionUpdateTypes.MINOR  # noqa: W503
+                        != JenkinsVersionUpdateTypes.MINOR  # noqa: W503
                         and greatest_update_type  # noqa: W503
-                        != SemanticVersionUpdateTypes.MAJOR  # noqa: W503
+                        != JenkinsVersionUpdateTypes.MAJOR  # noqa: W503
                     )
                 ):
-                    greatest_update_type = SemanticVersionUpdateTypes.PATCH
+                    greatest_update_type = JenkinsVersionUpdateTypes.PATCH
                 elif (
-                    type_of_jenkins_update == SemanticVersionUpdateTypes.MINOR
+                    type_of_jenkins_update == JenkinsVersionUpdateTypes.MINOR
                     and (  # noqa: W503
                         greatest_update_type
-                        != SemanticVersionUpdateTypes.MAJOR  # noqa: W503
+                        != JenkinsVersionUpdateTypes.MAJOR  # noqa: W503
                     )
                 ):
-                    greatest_update_type = SemanticVersionUpdateTypes.MINOR
-                elif (
-                    type_of_jenkins_update == SemanticVersionUpdateTypes.MAJOR
-                ):
-                    greatest_update_type = SemanticVersionUpdateTypes.MAJOR
+                    greatest_update_type = JenkinsVersionUpdateTypes.MINOR
+                elif type_of_jenkins_update == JenkinsVersionUpdateTypes.MAJOR:
+                    greatest_update_type = JenkinsVersionUpdateTypes.MAJOR
 
-            if greatest_update_type == SemanticVersionUpdateTypes.PATCH:
+            if greatest_update_type == JenkinsVersionUpdateTypes.PATCH:
                 new_latest_version.increment_patch(1)
-            elif greatest_update_type == SemanticVersionUpdateTypes.MINOR:
+            elif greatest_update_type == JenkinsVersionUpdateTypes.MINOR:
                 new_latest_version.increment_minor(1)
-            elif greatest_update_type == SemanticVersionUpdateTypes.MAJOR:
+            elif greatest_update_type == JenkinsVersionUpdateTypes.MAJOR:
                 raise SystemExit(
                     "\n\n"
-                    + "WARNING: The current Jenkins image has had a major semantic version update.\n"  # noqa: E501,W503
+                    + "WARNING: The current Jenkins image has had a major jenkins version update.\n"  # noqa: E501,W503
                     + f"({prior_jenkins_version} -> {current_jenkins_version})\n"  # noqa: E501,W503
                     + "Manual tagging will need to occur for this kind of update.\n"  # noqa: E501,W503
                 )
