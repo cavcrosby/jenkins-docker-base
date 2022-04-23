@@ -53,6 +53,7 @@ ${HELP}:
 >	@echo '  ${DEPLOY}       - creates a container from the project image'
 >	@echo '  ${DISMANTLE}    - removes a deployed container and the supporting'
 >	@echo '                 environment setup'
+>	@echo '  ${PUBLISH}      - publish docker image to the project image repository'
 >	@echo '  ${TEST}         - runs test suite for the project'
 >	@echo '  ${CLEAN}        - removes files generated from all targets'
 >	@echo 'Common make configurations (e.g. make [config]=1 [targets]):'
@@ -73,6 +74,9 @@ ${DEPLOY}: ${DOCKER_TEST_DEPLOY}
 
 .PHONY: ${DISMANTLE}
 ${DISMANTLE}: ${DOCKER_TEST_DEPLOY_DISMANTLE}
+
+.PHONY: ${PUBLISH}
+${PUBLISH}: ${DOCKER_PUBLISH}
 
 .PHONY: ${GET_VIRTUALENV_PYTHON_VERSION}
 ${GET_VIRTUALENV_PYTHON_VERSION}:
