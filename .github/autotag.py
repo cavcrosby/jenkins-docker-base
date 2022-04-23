@@ -121,6 +121,39 @@ class JenkinsVersion:
 
         return update_types
 
+    def set_major(self, to):
+        """Set the jenkins versioning major to a given version.
+
+        Parameters
+        ----------
+        to : int
+            The version to set the jenkins versioning major to.
+
+        """
+        self.major = to
+    
+    def set_minor(self, to):
+        """Set the jenkins versioning minor to a given version.
+
+        Parameters
+        ----------
+        to : int
+            The version to set the jenkins versioning minor to.
+
+        """
+        self.minor = to
+
+    def set_patch(self, to):
+        """Set the jenkins versioning patch to a given version.
+
+        Parameters
+        ----------
+        to : int
+            The version to set the jenkins versioning patch to.
+
+        """
+        self.patch = to
+
     def increment_major(self, by):
         """Increment the jenkins versioning major by a given amount.
 
@@ -323,6 +356,7 @@ def main(args):
                 new_latest_version.increment_patch(1)
             elif greatest_update_type == JenkinsVersionUpdateTypes.MINOR:
                 new_latest_version.increment_minor(1)
+                new_latest_version.set_patch(0)
             elif greatest_update_type == JenkinsVersionUpdateTypes.MAJOR:
                 raise SystemExit(
                     "\n\n"
