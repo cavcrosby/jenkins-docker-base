@@ -2,7 +2,9 @@
     "extends": [
         "config:base"
     ],
-    "platformAutomerge": true,
+    "schedule": [
+        "* 6 * * *"
+    ],
     "lockFileMaintenance": {
         "enabled": true,
         "automerge": true,
@@ -10,8 +12,20 @@
     },
     "packageRules": [
         {
+            "matchManagers": ["dockerfile"],
+            "matchUpdateTypes": ["digest"],
+            "automerge": true,
+            "automergeType": "branch"
+        },
+        {
+            "matchManagers": ["poetry"],
             "matchUpdateTypes": ["minor", "patch"],
-            "matchCurrentVersion": "!/^0/",
+            "automerge": true,
+            "automergeType": "branch"
+        },
+        {
+            "matchManagers": ["github-actions"],
+            "matchUpdateTypes": ["major", "minor", "patch"],
             "automerge": true,
             "automergeType": "branch"
         }
