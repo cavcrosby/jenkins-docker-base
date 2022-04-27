@@ -26,8 +26,6 @@ _arg_parser = argparse.ArgumentParser(
     allow_abbrev=False,
 )
 
-# TODO(cavcrosby): ENV_VAR_REGEX was copied over from another project. See
-# about integrating this into pylib?
 ENV_VAR_REGEX = r"^[a-zA-Z_]\w*=.+"
 _DOCKERFILE = "Dockerfile"
 _JENKINS_DOCKER_IMAGE = "jenkins/jenkins:lts"
