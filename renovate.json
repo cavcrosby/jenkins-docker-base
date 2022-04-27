@@ -28,6 +28,12 @@
             "matchUpdateTypes": ["major", "minor", "patch"],
             "automerge": true,
             "automergeType": "branch"
+        },
+        {
+            "matchManagers": ["jenkins"],
+            "matchUpdateTypes": ["major", "minor", "patch"],
+            "automerge": true,
+            "automergeType": "branch"
         }
     ]
 }

@@ -374,6 +374,11 @@ def main(args):
         ):
             _logger.info("detected casc file changes")
             new_latest_version.increment_minor(1)
+        elif chd_file_path == pathlib.PurePath(repo_working_dir).joinpath(
+            "plugins.txt"
+        ):
+            new_latest_version.increment_patch(1)
+
 
     _logger.info(f"the prior latest repo version: {latest_version}")
     _logger.info(f"the final new latest repo version: {new_latest_version}")
