@@ -331,6 +331,7 @@ def main(args):
     # the 'R' kwargs parameter swaps both sides of a diff
     patch = this_repo.head.commit.diff("HEAD~1", create_patch=True, R=True)
 
+    repo_update_types = list()
     for chd_object in patch:
         chd_file_path = pathlib.PurePath(repo_working_dir).joinpath(
             chd_object.b_path
@@ -375,16 +376,15 @@ def main(args):
             # In the event that the Jenkins maintainers decided to increment
             # multiple parts of the jenkins versioning. I only want to denote
             # the greatest part that has changed.
-            greatest_update_type = Version.determine_greatest_update_type(
-                types_of_jenkins_update
+            greatest_jenkins_update_type = (
+                Version.determine_greatest_update_type(types_of_jenkins_update)
             )
 
-            if greatest_update_type == VersionUpdateTypes.PATCH:
-                new_latest_version.increment_patch(1)
-            elif greatest_update_type == VersionUpdateTypes.MINOR:
-                new_latest_version.increment_minor(1)
-                new_latest_version.set_patch(0)
-            elif greatest_update_type == VersionUpdateTypes.MAJOR:
+            if greatest_jenkins_update_type == VersionUpdateTypes.PATCH:
+                repo_update_types.append(VersionUpdateTypes.PATCH)
+            elif greatest_jenkins_update_type == VersionUpdateTypes.MINOR:
+                repo_update_types.append(VersionUpdateTypes.MINOR)
+            elif greatest_jenkins_update_type == VersionUpdateTypes.MAJOR:
                 raise SystemExit(
                     "\n\n"
                     + "WARNING: The current Jenkins image has had a major jenkins version update.\n"  # noqa: E501,W503
@@ -395,17 +395,30 @@ def main(args):
             _DOCKERFILE
         ):
             _logger.info(f"detected general {_DOCKERFILE} changes")
-            new_latest_version.increment_minor(1)
+            repo_update_types.append(VersionUpdateTypes.MINOR)
         elif chd_file_path == pathlib.PurePath(repo_working_dir).joinpath(
             "casc.yaml"
         ):
             _logger.info("detected casc file changes")
-            new_latest_version.increment_minor(1)
+            repo_update_types.append(VersionUpdateTypes.MINOR)
         elif chd_file_path == pathlib.PurePath(repo_working_dir).joinpath(
             "plugins.txt"
         ):
-            new_latest_version.increment_patch(1)
+            repo_update_types.append(VersionUpdateTypes.PATCH)
 
+    greatest_repo_update_type = Version.determine_greatest_update_type(
+        repo_update_types
+    )
+    if greatest_repo_update_type == VersionUpdateTypes.PATCH:
+        new_latest_version.increment_patch(1)
+    elif greatest_repo_update_type == VersionUpdateTypes.MINOR:
+        new_latest_version.set_patch(0)
+        new_latest_version.increment_minor(1)
+    elif greatest_repo_update_type == VersionUpdateTypes.MAJOR:
+        new_latest_version.set_patch(0)
+        new_latest_version.set_minor(0)
+        new_latest_version.increment_major(1)
+    
     _logger.info(f"the prior latest repo version: {latest_version}")
     _logger.info(f"the final new latest repo version: {new_latest_version}")
     if new_latest_version != latest_version:
