@@ -51,7 +51,158 @@ _console_handler.setFormatter(_formatter)
 _logger.addHandler(_console_handler)
 
 
-class JenkinsVersion:
+class VersionUpdateTypes(enum.Enum):
+    """Represent values that designate type of software versioning update."""
+
+    MAJOR = enum.auto()
+    MINOR = enum.auto()
+    PATCH = enum.auto()
+
+
+class Version:
+    """Represent a generic software version."""
+
+    @classmethod
+    def determine_greatest_update_type(self, versions):
+        """Determine the greatest version update type passed in.
+
+        Parameters
+        ----------
+        versions : list of autotag.VersionUpdateTypes
+            A list of VersionUpdateTypes objects.
+
+        Returns
+        -------
+        autotag.VersionUpdateTypes or None
+            The greatest update type, or None if versions is empty.
+
+        """
+        greatest = None
+
+        # major > minor > patch
+        for version in versions:
+            if version == VersionUpdateTypes.PATCH and (
+                greatest != VersionUpdateTypes.MINOR
+                and greatest  # noqa: W503
+                != VersionUpdateTypes.MAJOR  # noqa: W503
+            ):
+                greatest = VersionUpdateTypes.PATCH
+            elif version == VersionUpdateTypes.MINOR and (
+                greatest != VersionUpdateTypes.MAJOR
+            ):
+                greatest = VersionUpdateTypes.MINOR
+            elif version == VersionUpdateTypes.MAJOR:
+                greatest = VersionUpdateTypes.MAJOR
+
+        return greatest
+
+    def determine_update_types(self, v1):
+        """Determine the version update types between another version.
+
+        Parameters
+        ----------
+        v1 : autotag.Version
+            A version object.
+
+        Returns
+        -------
+        list of autotag.VersionUpdateTypes
+
+        Notes
+        -----
+        When going from one (software) version to another. It's normal to
+        consider whether the new version is considered a patch, minor, or major
+        update to the previous version.
+
+        """
+        update_types = list()
+        if abs(self.major - v1.major) > 0:
+            update_types.append(VersionUpdateTypes.MAJOR)
+        if abs(self.minor - v1.minor) > 0:
+            update_types.append(VersionUpdateTypes.MINOR)
+        if abs(self.patch - v1.patch) > 0:
+            update_types.append(VersionUpdateTypes.PATCH)
+
+        return update_types
+
+
+class SemanticVersion(Version):
+    """Represent a semantic version.
+
+    Parameters
+    ----------
+    version : str
+        A semantic version string (e.g. 1.2.3, 3.2.2).
+
+    Attributes
+    ----------
+    SEMANTIC_VERSION_REGEX : str
+        The regex used to extract the different parts of the semantic
+        versioning.
+
+    """
+
+    _MAJOR_CAPTURE_GROUP = 1
+    _MINOR_CAPTURE_GROUP = 2
+    _PATCH_CAPTURE_GROUP = 3
+
+    # for reference on where I got this regex from:
+    # https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
+    SEMANTIC_VERSION_REGEX = r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"  # noqa: E501
+
+    def __init__(self, version):
+        """Construct the semantic version object."""
+        semantic_groups = re.match(self.SEMANTIC_VERSION_REGEX, version)
+        self.major = int(semantic_groups[self._MAJOR_CAPTURE_GROUP])
+        self.minor = int(semantic_groups[self._MINOR_CAPTURE_GROUP])
+        self.patch = int(semantic_groups[self._PATCH_CAPTURE_GROUP])
+
+    def increment_major(self, by):
+        """Increment the semantic versioning major by a given amount.
+
+        Parameters
+        ----------
+        by : int
+            The amount to increment the semantic versioning major by.
+
+        """
+        self.major += by
+
+    def increment_minor(self, by):
+        """Increment the semantic versioning minor by a given amount.
+
+        Parameters
+        ----------
+        by : int
+            The amount to increment the semantic versioning minor by.
+
+        """
+        self.minor += by
+
+    def increment_patch(self, by):
+        """Increment the semantic versioning patch by a given amount.
+
+        Parameters
+        ----------
+        by : int
+            The amount to increment the semantic versioning patch by.
+
+        """
+        self.patch += by
+
+    def __eq__(self, v):
+        """Determine if the semantic version is equal to this instance."""
+        return (
+            f"{self.major}.{self.minor}.{self.patch}"
+            == f"{v.major}.{v.minor}.{v.patch}"  # noqa: W503
+        )
+
+    def __str__(self):
+        """Return the string representation of an instance."""
+        return f"{self.major}.{self.minor}.{self.patch}"
+
+
+class JenkinsVersion(Version):
     """Represent a jenkins version.
 
     Parameters
@@ -72,8 +223,7 @@ class JenkinsVersion:
     _PATCH_CAPTURE_GROUP = 3
     _IMPLICIT_PATCH_CHANGE_VERSION = -1
 
-    # for reference on what inspired this regex:
-    # https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
+    # based on the semantic version regex
     JENKINS_VERSION_REGEX = r"^(0|[1-9]\d*)\.(0|[1-9]\d*)(?:\.(0|[1-9]\d*))?(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"  # noqa: E501
 
     def __init__(self, version):
@@ -91,100 +241,6 @@ class JenkinsVersion:
         else:
             self.patch = int(self.patch)
 
-    @classmethod
-    def determine_update_types(cls, v1, v2):
-        """Determine the update types between two jenkins versions.
-
-        Parameters
-        ----------
-        v1 : autotag.JenkinsVersion
-            A jenkins version object.
-        v2 : autotag.JenkinsVersion
-            A jenkins version object.
-
-        Notes
-        -----
-        When going from one jenkins version to another. It's normal to
-        consider whether the new version is considered a patch, minor, or major
-        update to the previous version.
-
-        """
-        update_types = list()
-        if abs(v1.major - v2.major) > 0:
-            update_types.append(JenkinsVersionUpdateTypes.MAJOR)
-        if abs(v1.minor - v2.minor) > 0:
-            update_types.append(JenkinsVersionUpdateTypes.MINOR)
-        if abs(v1.patch - v2.patch) > 0:
-            update_types.append(JenkinsVersionUpdateTypes.PATCH)
-
-        return update_types
-
-    def set_major(self, to):
-        """Set the jenkins versioning major to a given version.
-
-        Parameters
-        ----------
-        to : int
-            The version to set the jenkins versioning major to.
-
-        """
-        self.major = to
-    
-    def set_minor(self, to):
-        """Set the jenkins versioning minor to a given version.
-
-        Parameters
-        ----------
-        to : int
-            The version to set the jenkins versioning minor to.
-
-        """
-        self.minor = to
-
-    def set_patch(self, to):
-        """Set the jenkins versioning patch to a given version.
-
-        Parameters
-        ----------
-        to : int
-            The version to set the jenkins versioning patch to.
-
-        """
-        self.patch = to
-
-    def increment_major(self, by):
-        """Increment the jenkins versioning major by a given amount.
-
-        Parameters
-        ----------
-        by : int
-            The amount to increment the jenkins versioning major by.
-
-        """
-        self.major += by
-
-    def increment_minor(self, by):
-        """Increment the jenkins versioning minor by a given amount.
-
-        Parameters
-        ----------
-        by : int
-            The amount to increment the jenkins versioning minor by.
-
-        """
-        self.minor += by
-
-    def increment_patch(self, by):
-        """Increment the jenkins versioning patch by a given amount.
-
-        Parameters
-        ----------
-        by : int
-            The amount to increment the jenkins versioning patch by.
-
-        """
-        self.patch += by
-
     def __eq__(self, v):
         """Determine if the jenkins version is equal to this instance."""
         return (
@@ -199,14 +255,6 @@ class JenkinsVersion:
             if self.patch == self._IMPLICIT_PATCH_CHANGE_VERSION
             else f"{self.major}.{self.minor}.{self.patch}"
         )
-
-
-class JenkinsVersionUpdateTypes(enum.Enum):
-    """Represent values that designate type of jenkins versioning update."""
-
-    MAJOR = enum.auto()
-    MINOR = enum.auto()
-    PATCH = enum.auto()
 
 
 def retrieve_cmd_args():
@@ -273,12 +321,12 @@ def main(args):
     _logger.info(f"started {_PROGNAME}")
     this_repo = git.Repo(os.getcwd(), search_parent_directories=True)
     repo_working_dir = this_repo.working_tree_dir
-    latest_version = JenkinsVersion(
+    latest_version = SemanticVersion(
         str(
             sorted(this_repo.tags, key=lambda tagref: str(tagref))[-1]
         ).replace("v", "")
     )
-    new_latest_version = JenkinsVersion(str(latest_version))
+    new_latest_version = SemanticVersion(str(latest_version))
 
     # the 'R' kwargs parameter swaps both sides of a diff
     patch = this_repo.head.commit.diff("HEAD~1", create_patch=True, R=True)
@@ -314,48 +362,29 @@ def main(args):
             _logger.info(f"prior Jenkins version: {prior_jenkins_version}")
             _logger.info(f"current Jenkins version: {current_jenkins_version}")
 
-            types_of_jenkins_update = JenkinsVersion.determine_update_types(
-                prior_jenkins_version, current_jenkins_version
+            types_of_jenkins_update = (
+                prior_jenkins_version.determine_update_types(
+                    current_jenkins_version
+                )
             )
             _logger.info(
                 "detected jenkins version updates between "
                 f"Jenkins versions: {types_of_jenkins_update}"
             )
 
-            greatest_update_type = None
             # In the event that the Jenkins maintainers decided to increment
             # multiple parts of the jenkins versioning. I only want to denote
             # the greatest part that has changed.
-            #
-            # major > minor > patch
-            for type_of_jenkins_update in types_of_jenkins_update:
-                if (
-                    type_of_jenkins_update == JenkinsVersionUpdateTypes.PATCH
-                    and (  # noqa: W503
-                        greatest_update_type
-                        != JenkinsVersionUpdateTypes.MINOR  # noqa: W503
-                        and greatest_update_type  # noqa: W503
-                        != JenkinsVersionUpdateTypes.MAJOR  # noqa: W503
-                    )
-                ):
-                    greatest_update_type = JenkinsVersionUpdateTypes.PATCH
-                elif (
-                    type_of_jenkins_update == JenkinsVersionUpdateTypes.MINOR
-                    and (  # noqa: W503
-                        greatest_update_type
-                        != JenkinsVersionUpdateTypes.MAJOR  # noqa: W503
-                    )
-                ):
-                    greatest_update_type = JenkinsVersionUpdateTypes.MINOR
-                elif type_of_jenkins_update == JenkinsVersionUpdateTypes.MAJOR:
-                    greatest_update_type = JenkinsVersionUpdateTypes.MAJOR
+            greatest_update_type = Version.determine_greatest_update_type(
+                types_of_jenkins_update
+            )
 
-            if greatest_update_type == JenkinsVersionUpdateTypes.PATCH:
+            if greatest_update_type == VersionUpdateTypes.PATCH:
                 new_latest_version.increment_patch(1)
-            elif greatest_update_type == JenkinsVersionUpdateTypes.MINOR:
+            elif greatest_update_type == VersionUpdateTypes.MINOR:
                 new_latest_version.increment_minor(1)
                 new_latest_version.set_patch(0)
-            elif greatest_update_type == JenkinsVersionUpdateTypes.MAJOR:
+            elif greatest_update_type == VersionUpdateTypes.MAJOR:
                 raise SystemExit(
                     "\n\n"
                     + "WARNING: The current Jenkins image has had a major jenkins version update.\n"  # noqa: E501,W503
@@ -376,7 +405,6 @@ def main(args):
             "plugins.txt"
         ):
             new_latest_version.increment_patch(1)
-
 
     _logger.info(f"the prior latest repo version: {latest_version}")
     _logger.info(f"the final new latest repo version: {new_latest_version}")
