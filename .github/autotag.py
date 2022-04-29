@@ -332,6 +332,7 @@ def main(args):
     patch = this_repo.head.commit.diff("HEAD~1", create_patch=True, R=True)
 
     repo_update_types = list()
+    reseat_latest_version_tag = False
     for chd_object in patch:
         chd_file_path = pathlib.PurePath(repo_working_dir).joinpath(
             chd_object.b_path
@@ -404,7 +405,7 @@ def main(args):
         elif chd_file_path == pathlib.PurePath(repo_working_dir).joinpath(
             "plugins.txt"
         ):
-            repo_update_types.append(VersionUpdateTypes.PATCH)
+            reseat_latest_version_tag = True
 
     greatest_repo_update_type = Version.determine_greatest_update_type(
         repo_update_types
@@ -418,7 +419,7 @@ def main(args):
         new_latest_version.set_patch(0)
         new_latest_version.set_minor(0)
         new_latest_version.increment_major(1)
-    
+
     _logger.info(f"the prior latest repo version: {latest_version}")
     _logger.info(f"the final new latest repo version: {new_latest_version}")
     if new_latest_version != latest_version:
@@ -426,6 +427,16 @@ def main(args):
         this_repo.create_tag(new_latest_tag_name)
         if args[PUSH_LONG_OPTION]:
             this_repo.remote().push(new_latest_tag_name)
+    elif reseat_latest_version_tag:
+        latest_tag_name = f"v{latest_version}"
+        this_repo.delete_tag(latest_tag_name)
+        this_repo.create_tag(latest_tag_name)
+        if args[PUSH_LONG_OPTION]:
+            # According to the git-push man page, the equivalent of using
+            # 'git push --delete <remote> <tag>' would be to append the tag
+            # name with a colon character.
+            this_repo.remote().push(f":{latest_tag_name}")
+            this_repo.remote().push(latest_tag_name)
 
 
 if __name__ == "__main__":
