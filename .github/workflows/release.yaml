@@ -11,33 +11,33 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: cavcrosby/pyenv-setup@v1.0.0
+      - uses: actions/checkout@v3
+      - uses: cavcrosby/pyenv-setup@v1.0.0
 
-    - id: common-mk-setup
-      uses: cavcrosby/common-mk-setup@v1.0.0
+      - id: common-mk-setup
+        uses: cavcrosby/common-mk-setup@v1.0.0
 
-    - name: Login to Docker Hub
-      uses: docker/login-action@v1
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_SECRET }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: cavcrosby
+          password: ${{ secrets.DOCKERHUB_SECRET }}
 
-    - name: Git the tag
-      run: echo "GIT_TAG=${GITHUB_REF#refs/tags/}" >> ${GITHUB_ENV}
+      - name: Git the tag
+        run: echo "GIT_TAG=${GITHUB_REF#refs/tags/}" >> ${GITHUB_ENV}
 
-    - name: Install the managed Python version
-      run: |
-        pyenv install "$(make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" get-virtualenv-python-version)"
+      - name: Install the managed Python version
+        run: |
+          pyenv install "$(make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" get-virtualenv-python-version)"
 
-    - name: Run project setup
-      run: |
-        make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" setup
+      - name: Run project setup
+        run: |
+          make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" setup
 
-    - name: Make docker image
-      run: |
-        make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" IMAGE_RELEASE_BUILD=1 DOCKER_LATEST_VERSION_TAG="${GIT_TAG}" image
+      - name: Make docker image
+        run: |
+          make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" IMAGE_RELEASE_BUILD=1 DOCKER_LATEST_VERSION_TAG="${GIT_TAG}" image
 
-    - name: Publish the docker image
-      run: |
-        make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" IMAGE_RELEASE_BUILD=1 publish
+      - name: Publish the docker image
+        run: |
+          make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" IMAGE_RELEASE_BUILD=1 publish

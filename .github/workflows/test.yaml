@@ -9,53 +9,53 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: cavcrosby/pyenv-setup@v1.0.0
+      - uses: actions/checkout@v3
+      - uses: cavcrosby/pyenv-setup@v1.0.0
 
-    - id: common-mk-setup
-      uses: cavcrosby/common-mk-setup@v1.0.0
+      - id: common-mk-setup
+        uses: cavcrosby/common-mk-setup@v1.0.0
 
-    - name: Install the managed Python version
-      run: |
-        pyenv install "$(make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" get-virtualenv-python-version)"
+      - name: Install the managed Python version
+        run: |
+          pyenv install "$(make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" get-virtualenv-python-version)"
 
-    - name: Run project setup
-      run: |
-        make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" setup
+      - name: Run project setup
+        run: |
+          make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" setup
 
-    - name: Run tests
-      run: |
-        # MONITOR(cavcrosby): toggle SKIP_DOCKER_NETWORK as a temporary work around for
-        # the 'make dismantle' target as this target assumes the Docker client is the
-        # customized version I have on my dev machine. That said, the changes made to
-        # this Docker client have been pushed upstream. Depending on how that goes, will
-        # affect what happens next.
-        #
-        # https://github.com/docker/cli/pull/3547
-        make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" SKIP_DOCKER_NETWORK=1 CONTINUOUS_INTEGRATION=1 test
+      - name: Run tests
+        run: |
+          # MONITOR(cavcrosby): toggle SKIP_DOCKER_NETWORK as a temporary work around for
+          # the 'make dismantle' target as this target assumes the Docker client is the
+          # customized version I have on my dev machine. That said, the changes made to
+          # this Docker client have been pushed upstream. Depending on how that goes, will
+          # affect what happens next.
+          #
+          # https://github.com/docker/cli/pull/3547
+          make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" SKIP_DOCKER_NETWORK=1 CONTINUOUS_INTEGRATION=1 test
   tag:
     if: github.ref_name == 'main' && github.ref_type == 'branch'
     needs: test
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-        token: ${{ secrets.WORKFLOW_ACCESS_TOKEN }}
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.WORKFLOW_ACCESS_GH_PAT }}
 
-    - uses: cavcrosby/pyenv-setup@v1.0.0
+      - uses: cavcrosby/pyenv-setup@v1.0.0
 
-    - id: common-mk-setup
-      uses: cavcrosby/common-mk-setup@v1.0.0
+      - id: common-mk-setup
+        uses: cavcrosby/common-mk-setup@v1.0.0
 
-    - name: Install the managed Python version
-      run: |
-        pyenv install "$(make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" get-virtualenv-python-version)"
+      - name: Install the managed Python version
+        run: |
+          pyenv install "$(make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" get-virtualenv-python-version)"
 
-    - name: Run project setup
-      run: |
-        make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" setup
+      - name: Run project setup
+        run: |
+          make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" setup
 
-    - name: Run autotag.py
-      run: |
-        python ${GITHUB_WORKSPACE}/.github/autotag.py --push
+      - name: Run autotag.py
+        run: |
+          python ${GITHUB_WORKSPACE}/.github/autotag.py --push
