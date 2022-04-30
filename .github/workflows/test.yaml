@@ -36,6 +36,7 @@ jobs:
   tag:
     if: github.ref_name == 'main' && github.ref_type == 'branch'
     needs: test
+    concurrency: autotag
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

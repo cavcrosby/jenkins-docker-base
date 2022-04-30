@@ -3,8 +3,9 @@
         "config:base"
     ],
     "schedule": [
-        "* 6 * * *"
+        "* 3-10 * * *"
     ],
+    "prConcurrentLimit": 1,
     "lockFileMaintenance": {
         "enabled": true,
         "automerge": true,
