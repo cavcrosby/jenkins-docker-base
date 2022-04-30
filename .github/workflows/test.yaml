@@ -56,5 +56,7 @@ jobs:
         make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" setup
 
     - name: Run autotag.py
+      env:
+        GITHUB_TOKEN: ${{ secrets.WORKFLOW_ACCESS_TOKEN }}
       run: |
         python ${GITHUB_WORKSPACE}/.github/autotag.py --push
