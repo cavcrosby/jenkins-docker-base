@@ -1,6 +1,14 @@
 name: Test
 
 concurrency:
+  # I am ok with instances of this workflow running concurrently in non-main
+  # branches. Mainly because tagging is not planned as of this writing to occur in
+  # in non-main branches.
+  #
+  # This implementation has the bool 'true' set for the group if any pushes are to
+  # the main branch. Otherwise run_id is returned, which is guaranteed to be unique.
+  # For reference:
+  # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#concurrency#example-using-a-fallback-value
   group: ${{ github.ref_name == 'main' && github.ref_type == 'branch' || github.run_id }}
   cancel-in-progress: true
 
