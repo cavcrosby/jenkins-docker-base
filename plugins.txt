@@ -43,7 +43,7 @@ matrix-auth:3.1.1
 matrix-project:758.v7a_ea_491852f3
 momentjs:1.1.1
 okhttp-api:4.9.3-105.vb96869f8ac3a
-pam-auth:1.7
+pam-auth:1.8
 parameterized-scheduler:1.0
 pipeline-build-step:2.18
 pipeline-github-lib:36.v4c01db_ca_ed16
