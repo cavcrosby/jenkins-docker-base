@@ -3,8 +3,6 @@
         "config:base"
     ],
     "prConcurrentLimit": 1,
-    "automerge": true,
-    "automergeType": "branch",
     "timezone": "utc",
     "schedule": [
         "after 3:00 pm before 10:00 pm"
@@ -17,19 +15,27 @@
     "packageRules": [
         {
             "matchManagers": ["dockerfile"],
-            "matchUpdateTypes": ["digest"]
+            "matchUpdateTypes": ["digest"],
+            "automerge": true,
+            "automergeType": "branch"
         },
         {
             "matchManagers": ["poetry"],
-            "matchUpdateTypes": ["minor", "patch"]
+            "matchUpdateTypes": ["minor", "patch"],
+            "automerge": true,
+            "automergeType": "branch"
         },
         {
             "matchManagers": ["github-actions"],
-            "matchUpdateTypes": ["major", "minor", "patch"]
+            "matchUpdateTypes": ["major", "minor", "patch"],
+            "automerge": true,
+            "automergeType": "branch"
         },
         {
             "matchManagers": ["jenkins"],
-            "matchUpdateTypes": ["major", "minor", "patch"]
+            "matchUpdateTypes": ["major", "minor", "patch"],
+            "automerge": true,
+            "automergeType": "branch"
         }
     ]
 }
