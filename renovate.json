@@ -4,42 +4,51 @@
     ],
     "prConcurrentLimit": 4,
     "timezone": "utc",
-    "schedule": [
-        "after 3:00 pm before 10:00 pm"
-    ],
     "lockFileMaintenance": {
         "enabled": true,
         "automerge": true,
-        "automergeType": "branch"
+        "automergeType": "branch",
+        "schedule": [
+            "at 1:00 am every 1 day"
+        ]
     },
     "packageRules": [
+        {
+            "matchManagers": ["poetry"],
+            "matchUpdateTypes": ["minor", "patch"],
+            "automerge": true,
+            "automergeType": "branch",
+            "schedule": [
+                "at 1:00 am every 1 day"
+            ]
+        },
+        {
+            "matchManagers": ["github-actions"],
+            "matchUpdateTypes": ["major", "minor", "patch"],
+            "automerge": true,
+            "automergeType": "branch",
+            "schedule": [
+                "at 1:00 am every 1 day"
+            ]
+        },
         {
             "matchManagers": ["dockerfile"],
             "matchUpdateTypes": ["digest"],
             "automerge": true,
             "automergeType": "branch",
             "schedule": [
-                "at 11:00 pm every 1 day"
+                "at 12:00 pm every 1 day"
             ]
-        },
-        {
-            "matchManagers": ["poetry"],
-            "matchUpdateTypes": ["minor", "patch"],
-            "automerge": true,
-            "automergeType": "branch"
-        },
-        {
-            "matchManagers": ["github-actions"],
-            "matchUpdateTypes": ["major", "minor", "patch"],
-            "automerge": true,
-            "automergeType": "branch"
         },
         {
             "matchManagers": ["jenkins"],
             "matchUpdateTypes": ["major", "minor", "patch"],
             "automerge": true,
             "automergeType": "branch",
-            "rebaseWhen": "conflicted"
+            "rebaseWhen": "conflicted",
+            "schedule": [
+                "after 8:00 pm before 11:00 pm"
+            ]
         }
     ]
 }
