@@ -4,6 +4,9 @@
     ],
     "prConcurrentLimit": 4,
     "timezone": "utc",
+    "schedule": [
+        "at 1:00 am every 1 day"
+    ],
     "lockFileMaintenance": {
         "enabled": true,
         "automerge": true,
@@ -17,19 +20,13 @@
             "matchManagers": ["poetry"],
             "matchUpdateTypes": ["minor", "patch"],
             "automerge": true,
-            "automergeType": "branch",
-            "schedule": [
-                "at 1:00 am every 1 day"
-            ]
+            "automergeType": "branch"
         },
         {
             "matchManagers": ["github-actions"],
             "matchUpdateTypes": ["major", "minor", "patch"],
             "automerge": true,
-            "automergeType": "branch",
-            "schedule": [
-                "at 1:00 am every 1 day"
-            ]
+            "automergeType": "branch"
         },
         {
             "matchManagers": ["dockerfile"],
