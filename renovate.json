@@ -7,7 +7,7 @@
     "automergeType": "branch",
     "timezone": "utc",
     "schedule": [
-        "after 4:00 am before 10:00 am"
+        "after 3:00 pm before 10:00 pm"
     ],
     "lockFileMaintenance": {
         "enabled": true,
