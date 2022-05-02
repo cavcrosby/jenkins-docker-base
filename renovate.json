@@ -5,14 +5,14 @@
     "prConcurrentLimit": 4,
     "timezone": "utc",
     "schedule": [
-        "at 1:00 am every 1 day"
+        "at 10:00 am every 1 day"
     ],
     "lockFileMaintenance": {
         "enabled": true,
         "automerge": true,
         "automergeType": "branch",
         "schedule": [
-            "at 1:00 am every 1 day"
+            "at 10:00 am every 1 day"
         ]
     },
     "packageRules": [
@@ -34,7 +34,7 @@
             "automerge": true,
             "automergeType": "branch",
             "schedule": [
-                "at 12:00 pm every 1 day"
+                "at 9:00 am every 1 day"
             ]
         },
         {
@@ -43,7 +43,7 @@
             "automerge": true,
             "automergeType": "branch",
             "schedule": [
-                "after 8:00 pm before 11:00 pm"
+                "after 5:00 am before 8:00 am"
             ]
         }
     ]
