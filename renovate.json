@@ -42,7 +42,6 @@
             "matchUpdateTypes": ["major", "minor", "patch"],
             "automerge": true,
             "automergeType": "branch",
-            "rebaseWhen": "conflicted",
             "schedule": [
                 "after 8:00 pm before 11:00 pm"
             ]
