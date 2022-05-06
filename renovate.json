@@ -5,14 +5,15 @@
     "prConcurrentLimit": 4,
     "timezone": "utc",
     "schedule": [
-        "at 10:00 am every 1 day"
+        "after 5:00 am before 11:00 am"
     ],
     "lockFileMaintenance": {
         "enabled": true,
         "automerge": true,
         "automergeType": "branch",
+        "rebaseWhen": "behind-base-branch",
         "schedule": [
-            "at 10:00 am every 1 day"
+            "after 5:00 am before 11:00 am"
         ]
     },
     "packageRules": [
@@ -20,31 +21,29 @@
             "matchManagers": ["poetry"],
             "matchUpdateTypes": ["minor", "patch"],
             "automerge": true,
-            "automergeType": "branch"
+            "automergeType": "branch",
+            "rebaseWhen": "behind-base-branch"
         },
         {
             "matchManagers": ["github-actions"],
             "matchUpdateTypes": ["major", "minor", "patch"],
             "automerge": true,
-            "automergeType": "branch"
+            "automergeType": "branch",
+            "rebaseWhen": "behind-base-branch"
         },
         {
             "matchManagers": ["dockerfile"],
             "matchUpdateTypes": ["digest"],
             "automerge": true,
             "automergeType": "branch",
-            "schedule": [
-                "at 9:00 am every 1 day"
-            ]
+            "rebaseWhen": "behind-base-branch"
         },
         {
             "matchManagers": ["jenkins"],
             "matchUpdateTypes": ["major", "minor", "patch"],
             "automerge": true,
             "automergeType": "branch",
-            "schedule": [
-                "after 5:00 am before 8:00 am"
-            ]
+            "rebaseWhen": "behind-base-branch"
         }
     ]
 }
