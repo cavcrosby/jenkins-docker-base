@@ -14,6 +14,19 @@ import unittest
 DOCKER_TEST_IMAGE = f"{os.environ['DOCKER_REPO']}:test"
 
 
+class TestAnsiLintTarget(unittest.TestCase):
+    """Run the ansilint Makefile target."""
+
+    def test_ansilint_target(self):
+        """Run the ansilint Makefile target."""
+        mkprocess = subprocess.run(
+            ("make", "ansilint"),
+            capture_output=True,
+            encoding="utf-8",
+        )
+        self.assertEqual(mkprocess.returncode, 0, mkprocess.stderr)
+
+
 class TestImageTarget(unittest.TestCase):
     """Run the image Makefile target."""
 
