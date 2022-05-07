@@ -9,6 +9,7 @@ LABEL tech.cavcrosby.jenkins.base.vcs-repo="https://github.com/cavcrosby/jenkins
 # parent jenkins image already has JENKINS_HOME defined
 ENV CASC_JENKINS_CONFIG_FILE "casc.yaml"
 ENV PLUGINS_FILE "plugins.txt"
+ENV JENKINS_UC_DOWNLOAD_URL "https://ftp-chi.osuosl.org/pub/jenkins/plugins"
 ENV JAVA_OPTS "-Djenkins.install.runSetupWizard=false -Dmail.smtp.starttls.enable=true"
 
 # this variable is picked up by the plugin, do not change to '*_PATH'
