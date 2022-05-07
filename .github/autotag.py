@@ -157,6 +157,39 @@ class SemanticVersion(Version):
         self.minor = int(semantic_groups[self._MINOR_CAPTURE_GROUP])
         self.patch = int(semantic_groups[self._PATCH_CAPTURE_GROUP])
 
+    def set_major(self, to):
+        """Set the semantic versioning major to a given version.
+
+        Parameters
+        ----------
+        to : int
+            The version to set the semantic versioning major to.
+
+        """
+        self.major = to
+    
+    def set_minor(self, to):
+        """Set the semantic versioning minor to a given version.
+
+        Parameters
+        ----------
+        to : int
+            The version to set the semantic versioning minor to.
+
+        """
+        self.minor = to
+
+    def set_patch(self, to):
+        """Set the semantic versioning patch to a given version.
+
+        Parameters
+        ----------
+        to : int
+            The version to set the semantic versioning patch to.
+
+        """
+        self.patch = to
+
     def increment_major(self, by):
         """Increment the semantic versioning major by a given amount.
 
