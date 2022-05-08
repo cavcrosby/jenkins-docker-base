@@ -1,6 +1,6 @@
 include base.mk
 
-# recursive variables
+# recursively expanded variables
 define ANSIBLE_INVENTORY =
 cat << _EOF_
 all:
