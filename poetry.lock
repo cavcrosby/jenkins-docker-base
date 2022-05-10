@@ -11,7 +11,7 @@ ansible-core = ">=2.12.5,<2.13.0"
 
 [[package]]
 name = "ansible-compat"
-version = "2.0.2"
+version = "2.0.3"
 description = "Ansible compatibility goodies"
 category = "dev"
 optional = false
@@ -589,8 +589,8 @@ ansible = [
     {file = "ansible-5.7.1.tar.gz", hash = "sha256:90a09a34510d194d63556895a225a89e4a8b748b9ae215b55e517a37de063a61"},
 ]
 ansible-compat = [
-    {file = "ansible-compat-2.0.2.tar.gz", hash = "sha256:c651995dc323ef145bab857fee6540febc881fb71b7feafe8163d49e273163a5"},
-    {file = "ansible_compat-2.0.2-py3-none-any.whl", hash = "sha256:456acfa7af04cafb1b80c96f143658b353a6164d5ec1442c7961a4eb052be136"},
+    {file = "ansible-compat-2.0.3.tar.gz", hash = "sha256:a1157e4059de41879f3f65d5ed62bf343fe5bd45286101e2d2971ffe57e3a8a5"},
+    {file = "ansible_compat-2.0.3-py3-none-any.whl", hash = "sha256:25379779463436ed670aa70fbcb03650de1a47f875d7f095b69b8348b33046dc"},
 ]
 ansible-core = [
     {file = "ansible-core-2.12.5.tar.gz", hash = "sha256:1ccc9944f101331adad1ed40d5ac66a8149133052ae34db0267a74aa73beebb3"},
