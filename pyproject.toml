@@ -13,7 +13,7 @@ pylib-cavcrosby = {git = "https://github.com/cavcrosby/pylib.git", branch = "mai
 GitPython = "^3.1.27"
 
 [tool.poetry.dev-dependencies]
-ansible-lint = "6.0.2"
+ansible-lint = "6.1.0"
 flake8 = "^4.0.1"
 black = "^22.3.0"
 flake8-docstrings = "^1.6.0"
