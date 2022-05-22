@@ -110,11 +110,11 @@ uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
 name = "bracex"
-version = "2.2.1"
+version = "2.3"
 description = "Bash style brace expander."
 category = "dev"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 
 [[package]]
 name = "certifi"
@@ -731,8 +731,8 @@ black = [
     {file = "black-22.3.0.tar.gz", hash = "sha256:35020b8886c022ced9282b51b5a875b6d1ab0c387b31a065b84db7c33085ca79"},
 ]
 bracex = [
-    {file = "bracex-2.2.1-py3-none-any.whl", hash = "sha256:096c4b788bf492f7af4e90ef8b5bcbfb99759ae3415ea1b83c9d29a5ed8f9a94"},
-    {file = "bracex-2.2.1.tar.gz", hash = "sha256:1c8d1296e00ad9a91030ccb4c291f9e4dc7c054f12c707ba3c5ff3e9a81bcd21"},
+    {file = "bracex-2.3-py3-none-any.whl", hash = "sha256:6789a715744bcb3359b53c4012dd94be5ab7669c638affe89f670595a3c73cc0"},
+    {file = "bracex-2.3.tar.gz", hash = "sha256:a3ce1d8a9fb7acc887e2e60ac5aa269f243d960c34c3d8a541fb672bdb9aa957"},
 ]
 certifi = [
     {file = "certifi-2022.5.18.1-py3-none-any.whl", hash = "sha256:f1d53542ee8cbedbe2118b5686372fb33c297fcd6379b050cca0ef13a597382a"},
