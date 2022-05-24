@@ -15,7 +15,7 @@ credentials:1087.1089.v2f1b_9a_b_040e4
 credentials-binding:523.vd859a_4b_122e6
 display-url-api:2.3.6
 durable-task:496.va67c6f9eefa7
-echarts-api:5.3.2-1
+echarts-api:5.3.2-2
 email-ext:2.88
 font-awesome-api:6.1.1-1
 git:4.11.3
