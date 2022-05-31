@@ -36,7 +36,7 @@ jobConfigHistory:1139.v888b_656ca_f6d
 job-dsl:1.79
 jquery3-api:3.6.0-4
 jsch:0.1.55.2
-junit:1.63
+junit:1119.va_a_5e9068da_d7
 lockable-resources:2.15
 mailer:414.vcc4c33714601
 matrix-auth:3.1.2
