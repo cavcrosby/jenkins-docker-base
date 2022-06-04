@@ -77,7 +77,7 @@ variant:1.4
 workflow-aggregator:581.v0c46fa_697ffd
 workflow-api:1164.v760c223ddb_32
 workflow-basic-steps:948.v2c72a_091b_b_68
-workflow-cps:2710.vcd48b_b_9e0e7d
+workflow-cps:2725.v7b_c717eb_12ce
 workflow-cps-global-lib:588.v576c103a_ff86
 workflow-durable-task-step:1139.v252a_e12e8463
 workflow-job:1182.v60a_e6279b_579
