@@ -167,7 +167,7 @@ class SemanticVersion(Version):
 
         """
         self.major = to
-    
+
     def set_minor(self, to):
         """Set the semantic versioning minor to a given version.
 
@@ -463,9 +463,7 @@ def main(args):
     elif reseat_latest_version_tag:
         latest_tag_name = f"v{latest_version}"
         short_head_hash = str(this_repo.head.commit)[:8]
-        _logger.info(
-            f"reset {latest_tag_name} to commit -> {short_head_hash}"
-        )
+        _logger.info(f"reset {latest_tag_name} to commit -> {short_head_hash}")
         this_repo.delete_tag(latest_tag_name)
         this_repo.create_tag(latest_tag_name)
         if args[PUSH_LONG_OPTION]:
