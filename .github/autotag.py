@@ -12,9 +12,9 @@ import sys
 # Third Party Imports
 import docker
 import git
+import pylib
 
 # Local Application Imports
-import pylib
 
 # constants and other program configurations
 _PROGNAME = os.path.basename(os.path.abspath(__file__))
