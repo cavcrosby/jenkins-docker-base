@@ -27,7 +27,7 @@ include python.mk
 VIRTUALENV_PYTHON_VERSION = 3.9.5
 
 include ansible.mk
-ANSISRC = $(shell find . \
+ANSIBLE_SRC = $(shell find . \
 	\( \
 		\( -type f \) \
 		-and \( -name '*.yml' \) \
