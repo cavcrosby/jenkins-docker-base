@@ -185,7 +185,7 @@ class TestCleanTarget(unittest.TestCase):
 
 
 class TestCleanTargetDoesImageNotExist(unittest.TestCase):
-    """Check if test image does not exist after running target."""
+    """Check if test image does not exist after running the clean target."""
 
     def setUp(self):
         """Set up environment before running test method(s)."""
