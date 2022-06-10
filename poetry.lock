@@ -43,17 +43,17 @@ resolvelib = ">=0.5.3,<0.6.0"
 
 [[package]]
 name = "ansible-lint"
-version = "6.2.2"
+version = "6.3.0"
 description = "Checks playbooks for practices and behavior that could potentially be improved"
 category = "dev"
 optional = false
 python-versions = ">=3.8"
 
 [package.dependencies]
-ansible-compat = ">=2.0.4"
+ansible-compat = ">=2.1.0"
 ansible-core = ">=2.12.0"
 enrich = ">=1.2.6"
-jsonschema = ">=4.5.1"
+jsonschema = ">=4.6.0"
 packaging = "*"
 pytest = "*"
 pyyaml = "*"
@@ -682,7 +682,7 @@ pyyaml = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9.5"
-content-hash = "c55d8096055a72f7fb81771c1411555b2a333dfaf687ab84243888c7ef91ead3"
+content-hash = "e7b001fcf3c980ce047d43d1c6828bdcfae980db1963a7c60af4f098f3cba008"
 
 [metadata.files]
 ansible = [
@@ -696,8 +696,8 @@ ansible-core = [
     {file = "ansible-core-2.12.6.tar.gz", hash = "sha256:5f366e851159d8f72ce68d32b8c0edda56ee537c01e9f68eca382bd1510af65d"},
 ]
 ansible-lint = [
-    {file = "ansible-lint-6.2.2.tar.gz", hash = "sha256:b8e2956fede90bd28150e97f209a8af787c6001f584bb6613112a1ce1aea311d"},
-    {file = "ansible_lint-6.2.2-py3-none-any.whl", hash = "sha256:c4eb1b25dcdbe04b347e4badb7a323dd4c96d06d28f33c6997c1ba2566bd3e10"},
+    {file = "ansible-lint-6.3.0.tar.gz", hash = "sha256:f57f520ae5d810ce062157dc7d633990ad2fbec81bbbb34ccc4ce3a0c21fcd38"},
+    {file = "ansible_lint-6.3.0-py3-none-any.whl", hash = "sha256:144b61a43fb9bad9fb19529105a98c87b8b84c99519290209dc624231f5b70ca"},
 ]
 atomicwrites = [
     {file = "atomicwrites-1.4.0-py2.py3-none-any.whl", hash = "sha256:6d1784dea7c0c8d4a5172b6c620f40b6e4cbfdf96d783691f2e1302a7b88e197"},
