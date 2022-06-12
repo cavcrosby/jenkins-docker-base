@@ -100,6 +100,14 @@ def update_policy(patch, repo_working_dir):
     """
     repo_update_types = list()
     for chd_object in patch:
+        if chd_object.a_path is None or chd_object.b_path is None:
+            # This is to occur if either a new file is part of the patch or if
+            # a file has been deleted. Because I cannot anticipate all new or
+            # removed files, I will skip determining the update types for
+            # additions and deletions. For reference:
+            # https://gitpython.readthedocs.io/en/stable/reference.html?highlight=diff#git.diff.Diff
+            continue
+
         chd_file_path = pathlib.PurePath(repo_working_dir).joinpath(
             chd_object.b_path
         )
