@@ -444,7 +444,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "pylib-cavcrosby"
-version = "0.0.4"
+version = "0.0.5"
 description = "A personal library of frequently used python code"
 category = "main"
 optional = false
@@ -459,7 +459,7 @@ requests = "^2.25.1"
 type = "git"
 url = "https://github.com/cavcrosby/pylib.git"
 reference = "main"
-resolved_reference = "8b2f7685bb9d676706546a2ad1218323acae09c8"
+resolved_reference = "c38d89cd6b180c109970ca5eac4a627d4c1dbc1a"
 
 [[package]]
 name = "pyparsing"
