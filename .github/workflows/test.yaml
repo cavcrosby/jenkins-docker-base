@@ -68,6 +68,6 @@ jobs:
         run: |
           make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" setup
 
-      - name: Run autotag.py
+      - name: Run tagrepo.py
         run: |
-          python ${GITHUB_WORKSPACE}/.github/autotag.py --push
+          python ${GITHUB_WORKSPACE}/.github/tagrepo.py --push
