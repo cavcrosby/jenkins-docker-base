@@ -11,9 +11,6 @@ _EOF_
 endef
 export ANSIBLE_INVENTORY
 
-# targets
-GET_VIRTUALENV_PYTHON_VERSION = get-virtualenv-python-version
-
 # include other generic makefiles
 include docker.mk
 export CONTAINER_NAME = jenkins-base
@@ -77,10 +74,6 @@ ${DISMANTLE}: ${DOCKER_TEST_DEPLOY_DISMANTLE}
 
 .PHONY: ${PUBLISH}
 ${PUBLISH}: ${DOCKER_PUBLISH}
-
-.PHONY: ${GET_VIRTUALENV_PYTHON_VERSION}
-${GET_VIRTUALENV_PYTHON_VERSION}:
->	@echo ${VIRTUALENV_PYTHON_VERSION}
 
 .PHONY: ${TEST}
 ${TEST}:
