@@ -29,6 +29,7 @@ ANSIBLE_SRC = $(shell find . \
 		\( -type f \) \
 		-and \( -name '*.yml' \) \
 	\) \
+	-and ! \( -iwholename './.config/ansible-lint.yml' \) \
 	-and ! \( -name '.python-version' \) \
 	-and ! \( -path '*.git*' \) \
 )
