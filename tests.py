@@ -14,13 +14,13 @@ import unittest
 DOCKER_TEST_IMAGE = f"{os.environ['DOCKER_REPO']}:test"
 
 
-class TestAnsibleLintTarget(unittest.TestCase):
-    """Run the ansible-lint Makefile target."""
+class TestLintTarget(unittest.TestCase):
+    """Run the lint Makefile target."""
 
     def test_ansible_lint_target(self):
-        """Run the ansible-lint Makefile target."""
+        """Run the lint Makefile target."""
         mkprocess = subprocess.run(
-            ("make", "ansible-lint"),
+            ("make", "lint"),
             capture_output=True,
             encoding="utf-8",
         )

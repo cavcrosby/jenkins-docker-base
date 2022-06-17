@@ -1,6 +1,10 @@
 include base.mk
 
 # recursively expanded variables
+
+# targets
+LINT = lint
+
 define ANSIBLE_INVENTORY =
 cat << _EOF_
 all:
@@ -34,6 +38,9 @@ ANSIBLE_SRC = $(shell find . \
 	-and ! \( -path '*.git*' \) \
 )
 
+# executables
+YAMLLINT = yamllint
+
 # simply expanded variables
 executables := \
 	${docker_executables}\
@@ -51,6 +58,7 @@ ${HELP}:
 >	@echo '  ${DEPLOY}       - creates a container from the project image'
 >	@echo '  ${DISMANTLE}    - removes a deployed container and the supporting'
 >	@echo '                 environment setup'
+>	@echo '  ${LINT}         - performs linting on the yaml configuration files'
 >	@echo '  ${PUBLISH}      - publish docker image to the project image repository'
 >	@echo '  ${TEST}         - runs test suite for the project'
 >	@echo '  ${CLEAN}        - removes files generated from all targets'
@@ -72,6 +80,10 @@ ${DEPLOY}: ${DOCKER_TEST_DEPLOY}
 
 .PHONY: ${DISMANTLE}
 ${DISMANTLE}: ${DOCKER_TEST_DEPLOY_DISMANTLE}
+
+.PHONY: ${LINT}
+${LINT}: ${ANSIBLE_LINT}
+>	${YAMLLINT} ./casc.yaml ./.config/ansible-lint.yml ./.github/workflows 1>&2
 
 .PHONY: ${PUBLISH}
 ${PUBLISH}: ${DOCKER_PUBLISH}

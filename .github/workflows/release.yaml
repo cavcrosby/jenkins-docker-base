@@ -1,6 +1,7 @@
+---
 name: Release
 
-on:
+on:  # yamllint disable-line rule:truthy
   push:
     branches:
       - "!*"
@@ -27,17 +28,13 @@ jobs:
         run: echo "GIT_TAG=${GITHUB_REF#refs/tags/}" >> ${GITHUB_ENV}
 
       - name: Install the managed Python version
-        run: |
-          pyenv install "$(make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" get-virtualenv-python-version)"
+        run: pyenv install "$(make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" get-virtualenv-python-version)"  # yamllint disable-line rule:line-length
 
       - name: Run project setup
-        run: |
-          make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" setup
+        run: make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" setup  # yamllint disable-line rule:line-length
 
       - name: Make docker image
-        run: |
-          make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" IMAGE_RELEASE_BUILD=1 DOCKER_LATEST_VERSION_TAG="${GIT_TAG}" image
+        run: make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" IMAGE_RELEASE_BUILD=1 DOCKER_LATEST_VERSION_TAG="${GIT_TAG}" image  # yamllint disable-line rule:line-length
 
       - name: Publish the docker image
-        run: |
-          make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" IMAGE_RELEASE_BUILD=1 publish
+        run: make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" IMAGE_RELEASE_BUILD=1 publish  # yamllint disable-line rule:line-length

@@ -1,18 +1,19 @@
+---
 name: Test
 
 concurrency:
   # I am ok with instances of this workflow running concurrently in non-main
-  # branches. Mainly because tagging is not planned as of this writing to occur in
+  # branches. Mainly because tagging is not planned as of this writing to occur
   # in non-main branches.
   #
-  # This implementation has the bool 'true' set for the group if any pushes are to
-  # the main branch. Otherwise run_id is returned, which is guaranteed to be unique.
-  # For reference:
+  # This implementation has the bool 'true' set for the group if any pushes are
+  # to the main branch. Otherwise run_id is returned, which is guaranteed to be
+  # unique. For reference:
   # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#concurrency#example-using-a-fallback-value
-  group: ${{ github.ref_name == 'main' && github.ref_type == 'branch' || github.run_id }}
+  group: ${{ github.ref_name == 'main' && github.ref_type == 'branch' || github.run_id }}  # yamllint disable-line rule:line-length
   cancel-in-progress: true
 
-on: 
+on:  # yamllint disable-line rule:truthy
   push:
     branches:
       - '**'
@@ -28,23 +29,20 @@ jobs:
         uses: cavcrosby/common-mk-setup@v1.0.0
 
       - name: Install the managed Python version
-        run: |
-          pyenv install "$(make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" get-virtualenv-python-version)"
+        run: pyenv install "$(make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" get-virtualenv-python-version)"  # yamllint disable-line rule:line-length
 
       - name: Run project setup
-        run: |
-          make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" setup
+        run: make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" setup  # yamllint disable-line rule:line-length
 
+      # MONITOR(cavcrosby): toggle SKIP_DOCKER_NETWORK as a temporary work
+      # around for the 'make dismantle' target as this target assumes the
+      # Docker client is the customized version I have on my dev machine.
+      # That said, the changes made to this Docker client have been pushed
+      # upstream. Depending on how that goes, will affect what happens next.
+      #
+      # https://github.com/docker/cli/pull/3547
       - name: Run tests
-        run: |
-          # MONITOR(cavcrosby): toggle SKIP_DOCKER_NETWORK as a temporary work around for
-          # the 'make dismantle' target as this target assumes the Docker client is the
-          # customized version I have on my dev machine. That said, the changes made to
-          # this Docker client have been pushed upstream. Depending on how that goes, will
-          # affect what happens next.
-          #
-          # https://github.com/docker/cli/pull/3547
-          make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" SKIP_DOCKER_NETWORK=1 CONTINUOUS_INTEGRATION=1 test
+        run: make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" SKIP_DOCKER_NETWORK=1 CONTINUOUS_INTEGRATION=1 test  # yamllint disable-line rule:line-length
   tag:
     if: github.ref_name == 'main' && github.ref_type == 'branch'
     needs: test
@@ -61,12 +59,10 @@ jobs:
         uses: cavcrosby/common-mk-setup@v1.0.0
 
       - name: Install the managed Python version
-        run: |
-          pyenv install "$(make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" get-virtualenv-python-version)"
+        run: pyenv install "$(make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" get-virtualenv-python-version)"  # yamllint disable-line rule:line-length
 
       - name: Run project setup
-        run: |
-          make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" setup
+        run: make --include-dir "${{ steps.common-mk-setup.outputs.CAVCROSBY_MAKEFILES_PATH }}" setup  # yamllint disable-line rule:line-length
 
       - name: Run tagrepo.py
         run: |
