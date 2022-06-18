@@ -1,10 +1,6 @@
 include base.mk
 
 # recursively expanded variables
-
-# targets
-LINT = lint
-
 define ANSIBLE_INVENTORY =
 cat << _EOF_
 all:
@@ -38,8 +34,11 @@ ANSIBLE_SRC = $(shell find . \
 	-and ! \( -path '*.git*' \) \
 )
 
-# executables
-YAMLLINT = yamllint
+include yamllint.mk
+YAML_SRC = \
+	./casc.yaml\
+	./.config/ansible-lint.yml\
+	./.github/workflows
 
 # simply expanded variables
 executables := \
@@ -82,8 +81,7 @@ ${DEPLOY}: ${DOCKER_TEST_DEPLOY}
 ${DISMANTLE}: ${DOCKER_TEST_DEPLOY_DISMANTLE}
 
 .PHONY: ${LINT}
-${LINT}: ${ANSIBLE_LINT}
->	${YAMLLINT} ./casc.yaml ./.config/ansible-lint.yml ./.github/workflows 1>&2
+${LINT}: ${ANSIBLE_LINT} ${YAMLLINT}
 
 .PHONY: ${PUBLISH}
 ${PUBLISH}: ${DOCKER_PUBLISH}
