@@ -28,7 +28,7 @@ test = ["coverage", "flaky", "pip-tools", "pytest", "pytest-markdown", "pytest-m
 
 [[package]]
 name = "ansible-core"
-version = "2.12.6"
+version = "2.12.7"
 description = "Radically simple IT automation"
 category = "main"
 optional = false
@@ -712,7 +712,7 @@ ansible-compat = [
     {file = "ansible_compat-2.1.0-py3-none-any.whl", hash = "sha256:4ef7350fa1e768719a6df0239474bab5733c8910627ed6e3ec1be5381d710d17"},
 ]
 ansible-core = [
-    {file = "ansible-core-2.12.6.tar.gz", hash = "sha256:5f366e851159d8f72ce68d32b8c0edda56ee537c01e9f68eca382bd1510af65d"},
+    {file = "ansible-core-2.12.7.tar.gz", hash = "sha256:a31c1b0a3e2efedcb4c48cf95d36aa0ab19cef40eba1719ddb0d92ba1a9cf62a"},
 ]
 ansible-lint = [
     {file = "ansible-lint-6.3.0.tar.gz", hash = "sha256:f57f520ae5d810ce062157dc7d633990ad2fbec81bbbb34ccc4ce3a0c21fcd38"},
