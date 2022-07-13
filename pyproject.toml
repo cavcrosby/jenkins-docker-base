@@ -7,7 +7,7 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.9.5"
-ansible = "6.0.0"
+ansible = "6.1.0"
 docker = "^5.0.3"
 pylib-cavcrosby = {git = "https://github.com/cavcrosby/pylib.git", branch = "main"}
 cavcrosby-autotag = {git = "https://github.com/cavcrosby/autotag.git", rev = "main"}
