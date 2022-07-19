@@ -33,7 +33,7 @@ jdk-tool:1.5
 jjwt-api:0.11.5-77.v646c772fddb_0
 jnr-posix-api:3.1.15-1
 jobConfigHistory:1156.v536a_97b_8d649
-job-dsl:1.80
+job-dsl:1.81
 jquery3-api:3.6.0-4
 jsch:0.1.55.2
 junit:1119.1121.vc43d0fc45561
