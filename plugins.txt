@@ -10,7 +10,7 @@ caffeine-api:2.9.3-65.v6a_47d0f4d1fe
 checks-api:1.7.4
 cloudbees-folder:6.729.v2b_9d1a_74d673
 command-launcher:84.v4a_97f2027398
-configuration-as-code:1511.vb_f985b_894e40
+configuration-as-code:1512.vb_79d418d5fc8
 credentials:1139.veb_9579fca_33b_
 credentials-binding:523.vd859a_4b_122e6
 display-url-api:2.3.6
