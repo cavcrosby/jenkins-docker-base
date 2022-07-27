@@ -73,7 +73,7 @@ timestamper:1.18
 token-macro:308.v4f2b_ed62b_b_16
 trilead-api:1.67.vc3938a_35172f
 uno-choice:2.6.3
-variant:1.4
+variant:59.vf075fe829ccb
 workflow-aggregator:590.v6a_d052e5a_a_b_5
 workflow-api:1188.v0016b_4f29881
 workflow-basic-steps:969.vc4ec3e4854b_f
