@@ -38,7 +38,7 @@ jquery3-api:3.6.0-4
 jsch:0.1.55.2
 junit:1119.1121.vc43d0fc45561
 lockable-resources:2.16
-mailer:414.vcc4c33714601
+mailer:438.v02c7f0a_12fa_4
 matrix-auth:3.1.5
 matrix-project:772.v494f19991984
 momentjs:1.1.1
